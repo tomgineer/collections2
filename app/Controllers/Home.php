@@ -47,6 +47,7 @@ class Home extends BaseController{
             'media' => $media,
             'alias' => $alias,
             'label' => $contentModel->translateMediaType('alias', 'media_type', $alias) ?? 'Media',
+            'layout' => $contentModel->layouts($alias),
             'page' => $page,
             'perPage' => $perPage,
             'totalItems' => $totalItems,

@@ -9,11 +9,13 @@
             <table class="table table-zebra w-full text-base">
                 <thead>
                     <tr>
-                        <?php if (in_array($alias, ['cds', 'books'], true)): ?>
+                        <?php if ($layout === 'one'): ?>
                             <th>Creator</th>
-                        <?php endif; ?>
-                        <th>Title</th>
-                        <?php if (in_array($alias, ['arkas'], true)): ?>
+                            <th>Title</th>
+                        <?php elseif ($layout === 'two'): ?>
+                            <th>Title</th>
+                        <?php elseif ($layout === 'three'): ?>
+                            <th>Title</th>
                             <th>Collection</th>
                         <?php endif; ?>
                     </tr>
@@ -21,11 +23,13 @@
                 <tbody>
                     <?php foreach ($media as $item): ?>
                         <tr>
-                            <?php if (in_array($alias, ['cds', 'books'], true)): ?>
+                            <?php if ($layout === 'one'): ?>
                                 <td><?= esc($item['creator']) ?></td>
-                            <?php endif; ?>
-                            <td><?= esc($item['title']) ?></td>
-                            <?php if (in_array($alias, ['arkas'], true)): ?>
+                                <td><?= esc($item['title']) ?></td>
+                            <?php elseif ($layout === 'two'): ?>
+                                <td><?= esc($item['title']) ?></td>
+                            <?php elseif ($layout === 'three'): ?>
+                                <td><?= esc($item['title']) ?></td>
                                 <td><?= esc($item['collection']) ?></td>
                             <?php endif; ?>
                         </tr>
@@ -39,5 +43,4 @@
 </section>
 
 <?= $this->include('partials/pagination') ?>
-
 <?= $this->endSection() ?>

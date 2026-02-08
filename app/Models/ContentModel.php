@@ -77,4 +77,33 @@ public function getMediaCount(int $mediaTypeId): int {
         ->countAllResults();
 }
 
+/**
+ * Resolve the display layout key for a media type alias.
+ *
+ * @param string $alias Media type alias (for example: cds, books, blu-rays, arkas).
+ *
+ * @return string Layout key used by the view layer.
+ */
+public function layouts(string $alias): string {
+    switch ($alias) {
+        case 'cds':
+        case 'books':
+            // Creator, Title
+            $layout = 'one';
+            break;
+        case 'blu-rays':
+            // Title
+            $layout = 'two';
+            break;
+        case 'arkas':
+            // Title, Collection
+            $layout = 'three';
+            break;
+        default:
+            $layout = 'none';
+            break;
+    }
+    return $layout;
+}
+
 } // ─── End of Class ───
