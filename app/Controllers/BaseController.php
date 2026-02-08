@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\ContentModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -35,11 +36,14 @@ abstract class BaseController extends Controller
         // Load here all helpers you want to be available in your controllers that extend BaseController.
         // Caution: Do not put the this below the parent::initController() call below.
         // $this->helpers = ['form', 'url'];
+        $this->helpers = ['utility'];
 
         // Caution: Do not edit this line.
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+        $mediaTypes = (new ContentModel())->getMediaTypes();
+        service('renderer')->setVar('mediaTypes', $mediaTypes);
     }
 }
