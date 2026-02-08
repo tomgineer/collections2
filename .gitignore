@@ -144,3 +144,6 @@ public/assets/
 app/Config/App.php
 app/Config/Database.php
 app/Config/Cookie.php
+
+# Local Obsidian Html
+writable/obsidian_html/
