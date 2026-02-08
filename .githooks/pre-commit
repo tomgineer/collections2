@@ -1,0 +1,28 @@
+#!/bin/sh
+
+FILE="VERSION"
+
+if [ ! -f "$FILE" ]; then
+  echo "0.0.0" > "$FILE"
+fi
+
+IFS='.' read MAJOR MINOR PATCH < "$FILE"
+
+PATCH=$((PATCH + 1))
+
+if [ "$PATCH" -ge 10 ]; then
+  PATCH=0
+  MINOR=$((MINOR + 1))
+fi
+
+if [ "$MINOR" -ge 10 ]; then
+  MINOR=0
+  MAJOR=$((MAJOR + 1))
+fi
+
+NEW="$MAJOR.$MINOR.$PATCH"
+
+echo "$NEW" > "$FILE"
+git add "$FILE"
+
+echo "🔖 Collections version bumped to $NEW"
