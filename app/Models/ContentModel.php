@@ -11,6 +11,11 @@ class ContentModel extends Model {
         $this->db = Database::connect();
     }
 
+/**
+ * Get all media types ordered by position.
+ *
+ * @return list<array<string, mixed>>
+ */
 public function getMediaTypes(): array {
     return $this->db->table('media_types')
         ->orderBy('position', 'ASC')
@@ -18,34 +23,58 @@ public function getMediaTypes(): array {
         ->getResultArray();
 }
 
-public function getMedia(int $mediaTypeId): array {
+/**
+ * Get paginated media rows for a specific media type.
+ *
+ * @param int $mediaTypeId Media type identifier.
+ * @param int $offset Pagination offset.
+ * @param int $limit Number of rows to return.
+ *
+ * @return list<array<string, mixed>>
+ */
+public function getMedia(int $mediaTypeId, int $offset = 0, int $limit = 50): array {
     return $this->db->table('media')
         ->where('media_type_id', $mediaTypeId)
         ->orderBy('creator', 'ASC')
         ->orderBy('title', 'ASC')
         ->orderBy('collection', 'ASC')
+        ->limit($limit, $offset)
         ->get()
         ->getResultArray();
 }
 
-public function getMediaTypeIdByAlias(string $alias): ?int {
+/**
+ * Translate a media type field value to another field value.
+ *
+ * Example: translateMediaType('alias', 'id', $alias).
+ *
+ * @param string $from Source column name.
+ * @param string $to Target column name.
+ * @param string $value Source value to translate.
+ *
+ * @return string|null Translated value, or null when no match exists.
+ */
+public function translateMediaType(string $from, string $to, string $value): ?string {
     $row = $this->db->table('media_types')
-        ->select('id')
-        ->where('alias', $alias)
+        ->select($to)
+        ->where($from, $value)
         ->get()
         ->getRowArray();
 
-    return isset($row['id']) ? (int) $row['id'] : null;
+    return isset($row[$to]) ? (string) $row[$to] : null;
 }
 
-public function getMediaTypeLabelByAlias(string $alias): string {
-    $row = $this->db->table('media_types')
-        ->select('media_type')
-        ->where('alias', $alias)
-        ->get()
-        ->getRowArray();
-
-    return isset($row['media_type']) ? (string) $row['media_type'] : 'Media';
+/**
+ * Count all media rows for a specific media type.
+ *
+ * @param int $mediaTypeId Media type identifier.
+ *
+ * @return int
+ */
+public function getMediaCount(int $mediaTypeId): int {
+    return (int) $this->db->table('media')
+        ->where('media_type_id', $mediaTypeId)
+        ->countAllResults();
 }
 
 } // ─── End of Class ───

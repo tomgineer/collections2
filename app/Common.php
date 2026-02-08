@@ -14,10 +14,10 @@
  * @see: https://codeigniter.com/user_guide/extending/common.html
  */
 
-if (!defined('COLLECTIONS_VERSION')) {
+if (!defined('SYS_VERSION')) {
     $versionFile = ROOTPATH . 'VERSION';
     define(
-        'COLLECTIONS_VERSION',
+        'SYS_VERSION',
         is_readable($versionFile) ? trim(file_get_contents($versionFile)) : 'dev'
     );
 }

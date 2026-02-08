@@ -14,6 +14,7 @@ class ImportModel extends Model {
 public function initImport(): void {
     if ( $this->checkObsidianHtml() ) {
         $this->importFilesToDatabase();
+        $this->calcMediaTypeStats();
     }
 }
 /**
@@ -201,7 +202,27 @@ private function importFilesToDatabase(): void {
     $this->db->transStart();
     $this->db->table('media')->truncate();
     $this->db->table('media')->insertBatch($rowsToInsert);
+    $this->calcMediaTypeStats();
     $this->db->transComplete();
+}
+
+/**
+ * Recalculate and persist per-media-type item counts and MSRP totals.
+ */
+private function calcMediaTypeStats(): void {
+    $sql = <<<SQL
+UPDATE media_types mt
+LEFT JOIN (
+    SELECT media_type_id, COUNT(*) AS items_count
+    FROM media
+    GROUP BY media_type_id
+) m ON m.media_type_id = mt.id
+SET
+    mt.items_count = COALESCE(m.items_count, 0),
+    mt.total_msrp = COALESCE(m.items_count, 0) * mt.item_msrp
+SQL;
+
+    $this->db->query($sql);
 }
 
 } // ─── End of Class ───

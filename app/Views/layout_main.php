@@ -5,23 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collections :: Own Everything and be Much Happier</title>
-    <link rel="stylesheet" href="<?= base_url('css/tailwind.css?v=' . ver()) ?>">
+    <link rel="stylesheet" href="<?= base_url('css/tailwind.css?v='.SYS_VERSION) ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/arimo/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/firasans/style.css') ?>">
     <link rel="icon" type="image/svg+xml" href="<?= base_url('gfx/favicon.svg') ?>">
 </head>
 
-<header>
-    <?=$this->include('partials/nav.php')?>
-</header>
+<body class="flex flex-col min-h-screen">
+    <header>
+        <?=$this->include('partials/nav.php')?>
+    </header>
 
-<body>
-    <main>
+    <main class="flex-1">
         <?= $this->renderSection('main') ?>
     </main>
-</body>
 
-<footer>
-</footer>
+    <footer>
+        <?=$this->include('partials/footer.php')?>
+    </footer>
+</body>
 
 </html>
