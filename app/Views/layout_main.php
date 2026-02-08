@@ -20,7 +20,7 @@
         <?= $this->renderSection('main') ?>
     </main>
 
-    <footer>
+    <footer class="mt-24">
         <?=$this->include('partials/footer.php')?>
     </footer>
 </body>

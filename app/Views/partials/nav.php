@@ -1,4 +1,4 @@
-<nav class="navbar bg-base-100 sticky top-0 z-50">
+<nav class="navbar bg-base-100 fixed top-0 left-0 right-0 z-50">
     <div class="flex-none">
         <button class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -12,9 +12,13 @@
         </a>
 
         <ul class="flex gap-1">
+            <?php $cur_url = current_url() ?>
             <?php foreach ($mediaTypes as $media): ?>
+                <?php $link_url = site_url('media/' . $media['alias']) ?>
                 <li>
-                    <a class="btn btn-ghost hover:btn-primary" href="<?= site_url('media/' . $media['alias']) ?>"><?= esc($media['media_type']) ?></a>
+                    <a class="btn hover:btn-primary <?=($cur_url===$link_url?'btn-secondary':'btn-ghost')?>" href="<?=$link_url?>">
+                        <?= esc($media['media_type']) ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>
