@@ -7,34 +7,13 @@
     <?php if (! empty($media)): ?>
         <div class="overflow-x-auto mt-6">
             <table class="table table-zebra w-full text-base">
-                <thead>
-                    <tr>
-                        <?php if ($layout === 'one'): ?>
-                            <th>Creator</th>
-                            <th>Title</th>
-                        <?php elseif ($layout === 'two'): ?>
-                            <th>Title</th>
-                        <?php elseif ($layout === 'three'): ?>
-                            <th>Title</th>
-                            <th>Collection</th>
-                        <?php endif; ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($media as $item): ?>
-                        <tr>
-                            <?php if ($layout === 'one'): ?>
-                                <td><?= esc($item['creator']) ?></td>
-                                <td><?= esc($item['title']) ?></td>
-                            <?php elseif ($layout === 'two'): ?>
-                                <td><?= esc($item['title']) ?></td>
-                            <?php elseif ($layout === 'three'): ?>
-                                <td><?= esc($item['title']) ?></td>
-                                <td><?= esc($item['collection']) ?></td>
-                            <?php endif; ?>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
+                <?php if (in_array($alias, ['cds', 'books'], true)): ?>
+                    <?= $this->include('tables/layout_1') ?>
+                <?php elseif (in_array($alias, ['blu-rays'], true)): ?>
+                    <?= $this->include('tables/layout_2') ?>
+                <?php else: ?>
+                    <?= $this->include('tables/layout_3') ?>
+                <?php endif; ?>
             </table>
         </div>
     <?php else: ?>

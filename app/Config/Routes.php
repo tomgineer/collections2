@@ -21,3 +21,8 @@ $routes->get('/', 'Home::index');
 //  (:hash) -> is the same as (:segment), but can be used to easily see which routes use hashed ids.
 
 $routes->get('media/(:segment)', 'Home::media/$1');
+
+/**
+ * Ajax
+ */
+$routes->get('ajax/search', 'Ajax::search');

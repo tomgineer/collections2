@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/fonts/arimo/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/firasans/style.css') ?>">
     <link rel="icon" type="image/svg+xml" href="<?= base_url('gfx/favicon.svg') ?>">
+    <script src="<?=base_url('js/app-dist.js?v='.SYS_VERSION)?>" defer></script>
 </head>
 
 <body class="flex flex-col min-h-screen">

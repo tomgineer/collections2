@@ -1,9 +1,11 @@
 {
     "scripts": {
-        "dev": "npx npm-run-all --parallel dev:css",
+        "dev": "npx npm-run-all --parallel dev:css dev:js",
         "dev:css": "npx @tailwindcss/cli -i ./tailwind/input.css -o ./public/css/tailwind.css --watch",
-        "build": "npx npm-run-all build:css",
-        "build:css": "npx @tailwindcss/cli -i ./tailwind/input.css -o ./public/css/tailwind.css --minify"
+        "dev:js": "esbuild public/js/src/*.js --bundle --outdir=public/js --entry-names=[name]-dist --watch",
+        "build": "npx npm-run-all build:css build:js",
+        "build:css": "npx @tailwindcss/cli -i ./tailwind/input.css -o ./public/css/tailwind.css --minify",
+        "build:js": "esbuild public/js/src/*.js --bundle --minify --outdir=public/js --entry-names=[name]-dist"
     },
     "devDependencies": {
         "@tailwindcss/cli": "^4.1.18",

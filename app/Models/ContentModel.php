@@ -78,32 +78,27 @@ public function getMediaCount(int $mediaTypeId): int {
 }
 
 /**
- * Resolve the display layout key for a media type alias.
+ * Get the most popular creators for a media type.
  *
- * @param string $alias Media type alias (for example: cds, books, blu-rays, arkas).
+ * Excludes placeholder creators named "---".
  *
- * @return string Layout key used by the view layer.
+ * @param int $type Media type identifier.
+ * @param int $limit Maximum number of creators to return.
+ *
+ * @return list<array<string, mixed>>
  */
-public function layouts(string $alias): string {
-    switch ($alias) {
-        case 'cds':
-        case 'books':
-            // Creator, Title
-            $layout = 'one';
-            break;
-        case 'blu-rays':
-            // Title
-            $layout = 'two';
-            break;
-        case 'arkas':
-            // Title, Collection
-            $layout = 'three';
-            break;
-        default:
-            $layout = 'none';
-            break;
-    }
-    return $layout;
+public function mostPopular(int $type = 1, int $limit = 10): array {
+    $limit = max(1, $limit);
+
+    return $this->db->table('media')
+        ->select('creator, COUNT(*) as count')
+        ->where('media_type_id', $type)
+        ->where('creator !=', '---')
+        ->groupBy('creator')
+        ->orderBy('count', 'DESC')
+        ->limit($limit)
+        ->get()
+        ->getResultArray();
 }
 
 } // ─── End of Class ───
