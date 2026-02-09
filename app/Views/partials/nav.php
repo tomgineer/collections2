@@ -11,7 +11,7 @@
             <img class="h-6 w-auto" src="<?= base_url('gfx/logo.svg') ?>" alt="Collections Logo">
         </a>
 
-        <ul class="flex gap-1">
+        <ul class="hidden lg:flex lg:gap-1">
             <?php $cur_url = current_url() ?>
             <?php foreach ($mediaTypes as $media): ?>
                 <?php $link_url = site_url('media/' . $media['alias']) ?>

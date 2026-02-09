@@ -6,7 +6,7 @@
 
     <?php if (! empty($media)): ?>
         <div class="overflow-x-auto mt-6">
-            <table class="table table-zebra w-full text-base">
+            <table class="table table-zebra w-full lg:text-base">
                 <?php if (in_array($alias, ['cds', 'books'], true)): ?>
                     <?= $this->include('tables/layout_1') ?>
                 <?php elseif (in_array($alias, ['blu-rays'], true)): ?>
