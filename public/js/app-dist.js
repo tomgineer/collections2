@@ -7,32 +7,22 @@
     if (!searchResults) return;
     const baseUrl = document.querySelector('meta[name="base-url"]')?.content;
     if (!baseUrl) return;
-    const mainSelection = document.querySelector('[data-section="main-selection"]');
-    const introText = document.querySelector('[data-section="intro-text"]');
     const minLength = 2;
     const debounceMs = 250;
     let debounceTimer = null;
     let requestController = null;
-    const setMainSelectionVisible = (isVisible) => {
-      if (!mainSelection) return;
-      mainSelection.classList.toggle("hidden", !isVisible);
+    const setSearchResultsVisible = (isVisible) => {
+      searchResults.classList.toggle("hidden", !isVisible);
     };
-    const setIntroTextVisible = (isVisible) => {
-      if (!introText) return;
-      introText.classList.toggle("hidden", !isVisible);
-    };
-    const setDefaultSectionsVisible = (isVisible) => {
-      setMainSelectionVisible(isVisible);
-      setIntroTextVisible(isVisible);
-    };
+    setSearchResultsVisible(false);
     const clearResults = () => {
       searchResults.innerHTML = "";
-      setDefaultSectionsVisible(true);
+      setSearchResultsVisible(false);
     };
     const escapeHtml = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
     const renderError = () => {
       searchResults.innerHTML = '<div class="alert alert-error mt-4"><span>Search failed. Please try again.</span></div>';
-      setDefaultSectionsVisible(true);
+      setSearchResultsVisible(false);
     };
     const runSearch = async (term) => {
       if (requestController) {
@@ -52,7 +42,7 @@
           throw new Error(`HTTP ${response.status}`);
         }
         const rows = await response.json();
-        displayResults(searchResults, rows, query, escapeHtml, setDefaultSectionsVisible);
+        displayResults(searchResults, rows, query, escapeHtml, setSearchResultsVisible);
       } catch (error) {
         if (error.name === "AbortError") {
           return;
@@ -77,26 +67,26 @@
       }, debounceMs);
     });
   }
-  function displayResults(searchResults, rows, term, escapeHtml, setDefaultSectionsVisible) {
+  function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsVisible) {
     if (!Array.isArray(rows) || rows.length === 0) {
-      searchResults.innerHTML = '<div class="alert alert-info mt-4"><span>No results found.</span></div>';
-      setDefaultSectionsVisible(true);
+      searchResults.innerHTML = "";
+      setSearchResultsVisible(false);
       return;
     }
-    setDefaultSectionsVisible(false);
+    setSearchResultsVisible(true);
     const renderRows = rows.map((row) => `
         <tr>
             <td>${highlightSearchTerm(row.creator, term, escapeHtml)}</td>
             <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
             <td>${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
             <td class="text-right">
-                <span class="badge badge-outline badge-secondary">${escapeHtml(row.type)}</span>
+                <span class="badge badge-accent badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
             </td>
         </tr>
     `).join("");
     searchResults.innerHTML = `
         <div class="overflow-x-auto mt-4">
-            <table class="table table-zebra table-sm md:table-md">
+            <table class="table table-zebra lg:text-base">
                 <thead>
                     <tr>
                         <th>Creator</th>
@@ -119,7 +109,7 @@
     const escapedRegexTerm = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(${escapedRegexTerm})`, "gi");
     const parts = text.split(regex);
-    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-yellow-300 font-semibold">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
+    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-yellow-400 text-black">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
   }
 
   // public/js/src/app.js

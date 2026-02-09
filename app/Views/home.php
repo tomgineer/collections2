@@ -1,9 +1,11 @@
 <?= $this->extend('layout_main') ?>
 <?= $this->section('main') ?>
 
-<section class="max-w-4xl mx-auto p-4 mt-4 lg:mt-8">
+<section class="max-w-4xl mx-auto p-4 lg:mt-8 relative">
     <input type="search" placeholder="Search anything..." class="input input-xl w-full" data-js-search />
-    <div data-js-results></div>
+    <div class="absolute bottom-0 translate-y-full left-0 z-50 hidden
+        bg-base-100 p-4 rounded-lg border border-base-content/40 shadow-lg w-full" data-js-results>
+    </div>
 </section>
 
 <section class="max-w-7xl mx-auto p-4 mt-4 lg:mt-8" data-section="main-selection">

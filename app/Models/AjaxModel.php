@@ -12,43 +12,43 @@ class AjaxModel extends Model {
     }
 
 /**
- * Search media records by creator/title with short-term and full-text strategies.
+ * Searches media records by creator or title using SQL LIKE matching.
  *
- * @param string $term Raw search term from the request.
- * @return array<int, array<string, mixed>> Matching rows for the AJAX response.
+ * Performs a case-insensitive partial match on both the `creator` and `title`
+ * columns using `%term%` (LIKE 'both'), allowing searches to match substrings
+ * anywhere within the field (e.g. "U2", "R.E.M", partial titles).
+ *
+ * Queries shorter than 2 characters are ignored.
+ *
+ * @param string $term Search term entered by the user
+ * @return array<int, array<string, mixed>> Matching media records (max 10)
  */
 public function search(string $term): array {
     $term = trim($term);
+
+    // Keep your original minimum length rule
     if ($term === '' || mb_strlen($term) < 2) {
         return [];
     }
 
-    $builder = $this->db->table('media m')
-        ->select(['m.creator','m.title','m.collection','mt.media_type AS type'])
+    return $this->db->table('media m')
+        ->select([
+            'm.creator',
+            'm.title',
+            'm.collection',
+            'mt.media_type AS type',
+        ])
         ->join('media_types mt', 'mt.id = m.media_type_id', 'left')
-        ->limit(10);
-
-    if (mb_strlen($term) < 3) {
-        // short tokens like "U2" won't be in FULLTEXT
-        $builder->groupStart()
-            ->where('m.creator', $term)
+        ->groupStart()
+            ->like('m.creator', $term, 'both')
             ->orLike('m.title', $term, 'both')
-            ->groupEnd()
-            ->orderBy('m.creator', 'ASC')
-            ->orderBy('m.title', 'ASC');
-
-        return $builder->get()->getResultArray();
-    }
-
-    $escaped = $this->db->escape($term . '*');
-
-    $builder->select("MATCH(m.creator, m.title) AGAINST ($escaped IN BOOLEAN MODE) AS relevance", false)
-        ->where("MATCH(m.creator, m.title) AGAINST ($escaped IN BOOLEAN MODE) > 0", null, false)
-        ->orderBy('relevance', 'DESC')
+        ->groupEnd()
         ->orderBy('m.creator', 'ASC')
-        ->orderBy('m.title', 'ASC');
-
-    return $builder->get()->getResultArray();
+        ->orderBy('m.title', 'ASC')
+        ->limit(15)
+        ->get()
+        ->getResultArray();
 }
+
 
 } // ─── End of Class ───
