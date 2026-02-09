@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base-url" content="<?=base_url();?>">
     <title>Collections :: Own Everything and be Much Happier</title>
     <link rel="stylesheet" href="<?= base_url('css/tailwind.css?v='.SYS_VERSION) ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/arimo/style.css') ?>">
