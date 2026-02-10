@@ -13,21 +13,21 @@
     </div>
 </section>
 
-<section class="max-w-7xl mx-auto p-4 mt-4 lg:mt-8">
+<section class="max-w-7xl mx-auto p-4 mt-1 lg:mt-8">
     <!-- Popular -->
     <ul class="flex flex-wrap gap-1 mb-6 lg:mb-12">
         <?php foreach ($mostPopular as $popular): ?>
             <li>
-                <button class="btn" data-search-term="<?= esc($popular['creator']) ?>">
+                <button class="btn btn-sm lg:btn-md" data-search-term="<?= esc($popular['creator']) ?>">
                     <?= esc($popular['creator']) ?>
-                    <div class="badge badge-sm badge-primary"><?= esc($popular['count']) ?></div>
+                    <div class="badge badge-xs lg:badge-sm badge-primary"><?= esc($popular['count']) ?></div>
                 </button>
             </li>
         <?php endforeach; ?>
     </ul>
 
     <!-- Media Types -->
-    <ul class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12 lg:mb-24">
+    <ul class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:mb-24">
         <?php foreach ($mediaTypes as $media): ?>
             <?php $link_url = site_url('media/' . $media['alias']) ?>
             <li class="bg-base-200 overflow-hidden rounded-2xl shadow">
@@ -39,7 +39,7 @@
                             loading="lazy"
                             class="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-110">
                     </div>
-                    <h2 class="text-2xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-secondary to-accent
+                    <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-secondary to-accent
                         bg-clip-text text-transparent py-4 px-6">
                         <?= $media['media_type'] ?>
                     </h2>

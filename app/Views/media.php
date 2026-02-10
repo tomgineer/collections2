@@ -2,7 +2,10 @@
 <?= $this->section('main') ?>
 
 <section class="max-w-4xl mx-auto p-4 my-12">
-    <h1 class="text-4xl text-secondary"><?= esc($label) ?></h1>
+    <h1 class="text-3xl lg:text-6xl font-extrabold text-secondary bg-gradient-to-r from-primary to-secondary
+                bg-clip-text text-transparent inline-block">
+        <?= esc($label) ?>
+    </h1>
 
     <?php if (! empty($media)): ?>
         <div class="overflow-x-auto mt-6">
