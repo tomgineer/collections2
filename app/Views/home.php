@@ -32,12 +32,12 @@
             <?php $link_url = site_url('media/' . $media['alias']) ?>
             <li class="bg-base-200 overflow-hidden rounded-2xl shadow">
                 <a class="contents" href="<?= site_url('media/' . $media['alias']) ?>">
-                    <div class="group aspect-square">
+                    <div class="group aspect-square overflow-hidden">
                         <img
                             src="<?= base_url('gfx/webp/') . $media['alias'] . '.webp' ?>"
                             alt="<?= $media['alias'] ?>"
                             loading="lazy"
-                            class="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-110">
+                            class="w-full h-full transition-transform duration-300 ease-out group-hover:scale-110">
                     </div>
                     <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-secondary to-accent
                         bg-clip-text text-transparent py-4 px-6">
