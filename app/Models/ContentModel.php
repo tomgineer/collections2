@@ -87,7 +87,7 @@ public function getMediaCount(int $mediaTypeId): int {
  *
  * @return list<array<string, mixed>>
  */
-public function mostPopular(int $type = 1, int $limit = 10): array {
+public function mostPopular(int $type = 1, int $limit = 15): array {
     $limit = max(1, $limit);
 
     return $this->db->table('media')

@@ -109,7 +109,7 @@
     const escapedRegexTerm = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(${escapedRegexTerm})`, "gi");
     const parts = text.split(regex);
-    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-yellow-400 text-black">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
+    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-yellow-300 text-black">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
   }
 
   // public/js/src/app.js

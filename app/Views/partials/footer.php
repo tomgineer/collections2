@@ -29,7 +29,7 @@ SVG,
     }
     ?>
 
-    <footer class="w-full bg-base-200 text-base-content/70 mt-12 py-6 pb-12">
+    <footer class="w-full bg-base-200 text-base-content/70 py-6 pb-12">
         <div class="stats flex flex-wrap justify-center items-start gap-4">
             <?php foreach ($mediaTypes as $media): ?>
                 <?php

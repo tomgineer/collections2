@@ -13,18 +13,26 @@
     <script src="<?=base_url('js/app-dist.js?v='.SYS_VERSION)?>" defer></script>
 </head>
 
-<body class="flex flex-col min-h-screen">
-    <header>
-        <?=$this->include('partials/nav.php')?>
-    </header>
+<body>
+    <div class="drawer">
+        <input id="site-nav-drawer" type="checkbox" class="drawer-toggle" />
 
-    <main class="flex-1">
-        <?= $this->renderSection('main') ?>
-    </main>
+        <div class="drawer-content flex min-h-screen flex-col">
+            <header>
+                <?=$this->include('partials/nav.php')?>
+            </header>
 
-    <footer class="mt-24">
-        <?=$this->include('partials/footer.php')?>
-    </footer>
+            <main class="flex-1">
+                <?= $this->renderSection('main') ?>
+            </main>
+
+            <footer>
+                <?=$this->include('partials/footer.php')?>
+            </footer>
+        </div>
+
+        <?=$this->include('partials/nav_drawer.php')?>
+    </div>
 </body>
 
 </html>

@@ -11,8 +11,6 @@ class Home extends BaseController{
  * @return string
  */
 public function index(): string {
-    (new \App\Models\ImportModel())->initImport();
-
     $contentModel = new ContentModel();
     $data = [
         'mostPopular' => $contentModel->mostPopular()

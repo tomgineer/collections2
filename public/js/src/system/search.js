@@ -163,7 +163,7 @@ function highlightSearchTerm(value, term, escapeHtml) {
     return parts
         .map((part, index) => (
             index % 2 === 1
-                ? `<mark class="bg-yellow-400 text-black">${escapeHtml(part)}</mark>`
+                ? `<mark class="bg-yellow-300 text-black">${escapeHtml(part)}</mark>`
                 : escapeHtml(part)
         ))
         .join('');
