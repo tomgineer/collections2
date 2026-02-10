@@ -119,7 +119,7 @@ function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsV
             <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
             <td>${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
             <td class="text-right">
-                <span class="badge badge-accent badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
+                <span class="badge badge-secondary badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
             </td>
         </tr>
     `).join('');
@@ -163,7 +163,7 @@ function highlightSearchTerm(value, term, escapeHtml) {
     return parts
         .map((part, index) => (
             index % 2 === 1
-                ? `<mark class="bg-yellow-300 text-black">${escapeHtml(part)}</mark>`
+                ? `<mark class="bg-primary text-white px-1">${escapeHtml(part)}</mark>`
                 : escapeHtml(part)
         ))
         .join('');

@@ -80,7 +80,7 @@
             <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
             <td>${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
             <td class="text-right">
-                <span class="badge badge-accent badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
+                <span class="badge badge-secondary badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
             </td>
         </tr>
     `).join("");
@@ -109,9 +109,27 @@
     const escapedRegexTerm = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(${escapedRegexTerm})`, "gi");
     const parts = text.split(regex);
-    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-yellow-300 text-black">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
+    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-primary text-white px-1">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
+  }
+
+  // public/js/src/system/autoSearch.js
+  function autoSearchByTerm() {
+    const searchInput = document.querySelector("[data-js-search]");
+    if (!searchInput) return;
+    const searchTermButtons = document.querySelectorAll("button[data-search-term]");
+    if (!searchTermButtons.length) return;
+    searchTermButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const term = button.dataset.searchTerm?.trim();
+        if (!term) return;
+        searchInput.value = term;
+        searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        searchInput.focus();
+      });
+    });
   }
 
   // public/js/src/app.js
   initSearch();
+  autoSearchByTerm();
 })();
