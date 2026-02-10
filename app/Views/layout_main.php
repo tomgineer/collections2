@@ -14,24 +14,18 @@
 </head>
 
 <body>
-    <div class="drawer">
-        <input id="site-nav-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="flex min-h-screen flex-col">
+        <header>
+            <?=$this->include('partials/nav.php')?>
+        </header>
 
-        <div class="drawer-content flex min-h-screen flex-col">
-            <header>
-                <?=$this->include('partials/nav.php')?>
-            </header>
+        <main class="flex-1">
+            <?= $this->renderSection('main') ?>
+        </main>
 
-            <main class="flex-1">
-                <?= $this->renderSection('main') ?>
-            </main>
-
-            <footer>
-                <?=$this->include('partials/footer.php')?>
-            </footer>
-        </div>
-
-        <?=$this->include('partials/nav_drawer.php')?>
+        <footer>
+            <?=$this->include('partials/footer.php')?>
+        </footer>
     </div>
 </body>
 
