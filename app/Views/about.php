@@ -1,7 +1,7 @@
 <?= $this->extend('layout_main') ?>
 <?= $this->section('main') ?>
 
-<section class="max-w-4xl mx-auto p-4 my-8 lg:my-12">
+<section class="max-w-4xl mx-auto p-4 my-8 lg:my-16 pb-24">
     <article class="grid lg:grid-cols-[auto_1fr] lg:gap-24">
         <div class="order-1 lg:order-2">
             <div class="prose lg:prose-lg max-w-none">
@@ -53,7 +53,7 @@
             <?php for ($i = 1; $i <= 11; $i++): ?>
                 <img
                     class="w-full lg:w-[300px] aspect-square rounded-3xl border-2 border-base-100 shadow-2xl"
-                    src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp') ?>"
+                    src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp?v='.SYS_VERSION) ?>"
                     alt="About Picture"
                     loading="lazy">
             <?php endfor; ?>

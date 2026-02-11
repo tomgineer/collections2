@@ -1,6 +1,6 @@
 <thead>
     <tr>
-        <th>Title</th>
+        <th class="font-heading text-lg lg:text-xl text-base-content">Title</th>
     </tr>
 </thead>
 <tbody>

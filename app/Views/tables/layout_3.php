@@ -1,7 +1,7 @@
 <thead>
     <tr>
-        <th>Title</th>
-        <th>Collection</th>
+        <th class="font-heading text-lg lg:text-xl text-base-content">Title</th>
+        <th class="font-heading text-lg lg:text-xl text-base-content">Collection</th>
     </tr>
 </thead>
 <tbody>
