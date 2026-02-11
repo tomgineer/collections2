@@ -10,6 +10,9 @@ export default function initSearch() {
     const searchResults = document.querySelector('[data-js-results]');
     if (!searchResults) return;
 
+    const clearButton = document.querySelector('[data-js-search-clear]');
+    if (!clearButton) return;
+
     const baseUrl = document.querySelector('meta[name="base-url"]')?.content;
     if (!baseUrl) return;
 
@@ -22,7 +25,15 @@ export default function initSearch() {
         searchResults.classList.toggle('hidden', !isVisible);
     };
 
+    const syncClearButtonVisibility = () => {
+        if (!clearButton) return;
+
+        const hasValue = searchInput.value.trim().length > 0;
+        clearButton.classList.toggle('hidden', !hasValue);
+    };
+
     setSearchResultsVisible(false);
+    syncClearButtonVisibility();
 
     const clearResults = () => {
         searchResults.innerHTML = '';
@@ -76,6 +87,8 @@ export default function initSearch() {
 
     searchInput.addEventListener('input', () => {
         const term = searchInput.value.trim();
+        syncClearButtonVisibility();
+
         if (debounceTimer) {
             clearTimeout(debounceTimer);
         }
@@ -92,6 +105,23 @@ export default function initSearch() {
             runSearch(term);
         }, debounceMs);
     });
+
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            if (requestController) {
+                requestController.abort();
+            }
+
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+
+            searchInput.value = '';
+            clearResults();
+            syncClearButtonVisibility();
+            searchInput.focus();
+        });
+    }
 
 }
 /**
