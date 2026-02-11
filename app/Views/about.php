@@ -49,7 +49,7 @@
         <div class="order-2 lg:order-1 flex flex-col gap-4 lg:gap-8">
             <?php for ($i = 1; $i <= 11; $i++): ?>
                 <img
-                    class="w-full lg:w-[300px] h-auto rounded-3xl border-2 border-base-100 shadow-2xl"
+                    class="w-full lg:w-[300px] aspect-square rounded-3xl border-2 border-base-100 shadow-2xl"
                     src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp') ?>"
                     alt="About Picture"
                     loading="lazy">

@@ -147,7 +147,7 @@ function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsV
         <tr>
             <td>${highlightSearchTerm(row.creator, term, escapeHtml)}</td>
             <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
-            <td>${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
+            <td class="hidden md:table-cell">${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
             <td class="text-right">
                 <span class="badge badge-secondary badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
             </td>
@@ -161,7 +161,7 @@ function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsV
                     <tr>
                         <th>Creator</th>
                         <th>Title</th>
-                        <th>Collection</th>
+                        <th class="hidden md:table-cell">Collection</th>
                         <th class="text-right">Type</th>
                     </tr>
                 </thead>
