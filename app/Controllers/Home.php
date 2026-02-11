@@ -11,12 +11,17 @@ class Home extends BaseController{
  * @return string
  */
 public function index(): string {
-    $contentModel = new ContentModel();
-    $data = [
-        'mostPopular' => $contentModel->mostPopular()
-    ];
+    $cacheName = 'page-home';
+    if ($cachedView = cache($cacheName)) {
+        return $cachedView;
+    }
 
-    return view('home', $data);
+    $contentModel = new ContentModel();
+    $data = ['mostPopular' => $contentModel->mostPopular()];
+    $output = view('home', $data);
+    cache()->save($cacheName, $output, 86400);
+
+    return $output;
 }
 
 /**
@@ -26,10 +31,7 @@ public function index(): string {
  */
 public function about(): string {
     (new \App\Models\ImportModel())->initImport();
-    $data = [
-        'test' => 0
-    ];
-    return view('about', $data);
+    return view('about');
 }
 
 /**
@@ -47,6 +49,14 @@ public function media(string $alias): string {
         throw PageNotFoundException::forPageNotFound();
     }
 
+    $page = max(1, (int) $this->request->getGet('page'));
+
+    // Try serving the cached view
+    $cacheName = "page-media-{$alias}-p{$page}";
+    if ($cachedView = cache($cacheName)) {
+        return $cachedView;
+    }
+
     $contentModel = new ContentModel();
     $mediaTypeId = $contentModel->translateMediaType('alias', 'id', $alias);
     if ($mediaTypeId === null) {
@@ -54,7 +64,6 @@ public function media(string $alias): string {
     }
 
     $perPage = 100;
-    $page = max(1, (int) $this->request->getGet('page'));
     $totalItems = $contentModel->getMediaCount($mediaTypeId);
     $totalPages = max(1, (int) ceil($totalItems / $perPage));
     $page = min($page, $totalPages);
@@ -70,7 +79,11 @@ public function media(string $alias): string {
         'totalItems' => $totalItems,
         'totalPages' => $totalPages,
     ];
-    return view('media', $data);
+
+    $output = view('media', $data);
+    cache()->save($cacheName, $output, 86400);
+
+    return $output;
 }
 
 } // ─── End of Class ───

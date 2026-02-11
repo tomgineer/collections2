@@ -136,7 +136,6 @@ pnpm-debug.log*
 
 # Local machine / tool state
 .local/
-public/css/
 public/gfx/
 public/assets/
 

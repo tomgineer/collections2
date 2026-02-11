@@ -15,6 +15,7 @@ public function initImport(): void {
     if ( $this->checkObsidianHtml() ) {
         $this->importFilesToDatabase();
         $this->calcMediaTypeStats();
+        $this->clearRunTimeArtifacts();
     }
 }
 /**
@@ -224,5 +225,37 @@ SQL;
 
     $this->db->query($sql);
 }
+
+/**
+ * Clears runtime artifact files under WRITEPATH.
+ *
+ * Behavior:
+ * - Attempts to clear framework cache via cache()->clean().
+ * - Deletes all files (except `index.html`) from:
+ *   `writable/session`, `writable/logs`, and `writable/cache`.
+ *
+ * Notes:
+ * - This is an aggressive cleanup and may invalidate active sessions.
+ * - Subdirectories are ignored; only top-level files are removed.
+ */
+public function clearRunTimeArtifacts(): void {
+    try {
+        cache()->clean();
+    } catch (\Throwable $e) {}
+
+    foreach (['session', 'logs'] as $dir) {
+        $path = WRITEPATH . $dir . '/';
+        if (! is_dir($path)) {
+            continue;
+        }
+
+        foreach (new \FilesystemIterator($path) as $file) {
+            if ($file->isFile() && $file->getFilename() !== 'index.html') {
+                @unlink($file->getRealPath());
+            }
+        }
+    }
+}
+
 
 } // ─── End of Class ───

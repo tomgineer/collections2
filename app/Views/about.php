@@ -30,7 +30,7 @@
                 </p>
 
                 <p>
-                    It worked well, but it did not have a database. As the size of my collection grew, searches and other things I wanted to do started to not work the way I wanted. So I decided that it was time to add a database, include my favorite framework, and turn it into a more serious project. I rewrote the whole thing in three days. That is how the Collection 2 Project was created:
+                    It worked well, but it did not have a database. As the size of my collection grew, searches and other things I wanted to do started to not work the way I wanted. So I decided that it was time to add a database, include my favorite framework, and turn it into a more serious project. I rewrote the whole thing in three days. That is how the Collections II Project was created:
                     <a href="https://github.com/tomgineer/collections2" target="_blank" rel="noopener noreferrer">https://github.com/tomgineer/collections2</a>,
                     which is what you are looking at now.
                 </p>
