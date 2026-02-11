@@ -6,7 +6,7 @@
 <tbody>
     <?php foreach ($media as $item): ?>
         <tr>
-            <td><?= esc($item['title']) ?></td>
+            <td class="font-semibold"><?= esc($item['title']) ?></td>
         </tr>
     <?php endforeach; ?>
 </tbody>

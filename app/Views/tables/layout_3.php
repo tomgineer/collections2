@@ -7,8 +7,8 @@
 <tbody>
     <?php foreach ($media as $item): ?>
         <tr>
-            <td><?= esc($item['title']) ?></td>
-            <td><?= esc($item['collection']) ?></td>
+            <td class="font-semibold"><?= esc($item['title']) ?></td>
+            <td class="text-base-content/80"><?= esc($item['collection']) ?></td>
         </tr>
     <?php endforeach; ?>
 </tbody>
