@@ -1,7 +1,7 @@
 <thead>
     <tr>
-        <th><?= ($alias === 'cds' ? 'Artist' : 'Author') ?></th>
-        <th>Title</th>
+        <th class="font-heading text-lg lg:text-xl text-base-content"><?= ($alias === 'cds' ? 'Artist' : 'Author') ?></th>
+        <th class="font-heading text-lg lg:text-xl text-base-content">Title</th>
         <?php if ($alias === 'cds'): ?>
             <th>&nbsp;</th>
         <?php endif; ?>
@@ -12,7 +12,9 @@
         <tr>
             <td class="font-semibold">
                 <?php if ($item['creator'] === '---'): ?>
-                    <span class="badge badge-sm badge-dash badge-info">Various Artists</span>
+                    <span class="badge badge-xs lg:badge-sm badge-dash badge-info h-auto leading-tight text-center py-1">
+                        Various Artists
+                    </span>
                 <?php else: ?>
                     <?= esc($item['creator']) ?>
                 <?php endif; ?>

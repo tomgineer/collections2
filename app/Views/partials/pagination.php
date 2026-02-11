@@ -1,5 +1,5 @@
 <?php if (($totalPages ?? 1) > 1): ?>
-    <nav class="max-w-xl mx-auto flex justify-center mb-24">
+    <nav class="max-w-xl mx-auto flex justify-center mt-12">
         <div class="join">
             <?php if (($page ?? 1) > 1): ?>
                 <a class="join-item btn btn-lg btn-square hover:btn-secondary" href="<?= site_url('media/' . $alias) . '?page=' . ((int) $page - 1) ?>">
