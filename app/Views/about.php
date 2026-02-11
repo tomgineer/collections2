@@ -5,6 +5,9 @@
     <article class="grid lg:grid-cols-[auto_1fr] lg:gap-24">
         <div class="order-1 lg:order-2">
             <div class="prose lg:prose-lg max-w-none">
+
+                <img class="h-12 lg:h-16 w-auto" src="<?= base_url('gfx/logo.svg?v=' . SYS_VERSION) ?>" alt="Collections Logo">
+
                 <h1>The Story</h1>
 
                 <p>

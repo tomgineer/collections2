@@ -14,7 +14,7 @@
 
             <div class="flex-1 flex items-center">
                 <a href="<?= base_url() ?>" class="btn btn-ghost">
-                    <img class="h-6 w-auto" src="<?= base_url('gfx/logo.svg') ?>" alt="Collections Logo">
+                    <img class="h-8 w-auto" src="<?= base_url('gfx/logo.svg?v=' . SYS_VERSION) ?>" alt="Collections Logo">
                 </a>
 
                 <ul class="hidden lg:flex lg:gap-1">
