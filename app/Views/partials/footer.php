@@ -67,7 +67,7 @@ SVG,
             <p class="mt-12 text-center lg:text-right text-sm text-base-content/60">
                 Collections Version: <span class="text-info"><?= SYS_VERSION ?></span>.
                 <a
-                    href="https://github.com/tomgineer/collections"
+                    href="https://github.com/tomgineer/collections2"
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     class="ml-1 underline underline-offset-4 decoration-info hover:decoration-secondary hover:text-base-content/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded">Visit on GitHub</a>
