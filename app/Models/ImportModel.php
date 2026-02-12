@@ -16,6 +16,7 @@ public function initImport(): void {
         $this->importFilesToDatabase();
         $this->calcMediaTypeStats();
         $this->clearRunTimeArtifacts();
+        $this->updateLastUpdatedMetric();
     }
 }
 /**
@@ -228,6 +229,18 @@ private function buildSearchQuery(int $mediaTypeId, string $title, string $creat
     }
 
     return 'https://www.google.com/search?' . http_build_query(['q' => $query]);
+}
+
+/**
+ * Persist the last successful import completion timestamp in `metrics`.
+ */
+private function updateLastUpdatedMetric(): void {
+    $timestamp = date('Y-m-d H:i:s');
+
+    $this->db->table('metrics')
+        ->where('metric_key', 'last_updated')
+        ->set('metric_value', $timestamp)
+        ->update();
 }
 
 /**

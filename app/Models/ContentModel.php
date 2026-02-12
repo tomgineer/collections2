@@ -95,4 +95,16 @@ public function mostPopular(int $type = 1, int $limit = 17): array {
         ->getResultArray();
 }
 
+/**
+ * Get all metrics rows.
+ *
+ * @return list<array<string, mixed>>
+ */
+public function getMetrics(): array {
+    return $this->db->table('metrics')
+        ->orderBy('id', 'ASC')
+        ->get()
+        ->getResultArray();
+}
+
 } // ─── End of Class ───

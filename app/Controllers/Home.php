@@ -31,7 +31,10 @@ public function index(): string {
  */
 public function about(): string {
     (new \App\Models\ImportModel())->initImport();
-    return view('about');
+    $contentModel = new ContentModel();
+    return view('about', [
+        'metrics' => $contentModel->getMetrics(),
+    ]);
 }
 
 /**

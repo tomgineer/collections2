@@ -45,20 +45,49 @@
                 <p>
                     This simple little system works perfectly. I continue to enter products in Obsidian, meaning I always have them in the classic Markdown format that I like, and then I simply export them and they appear on the World Wide Web.
                 </p>
-
             </div>
         </div>
 
-        <div class="order-2 lg:order-1 flex flex-col gap-4 lg:gap-8">
-            <?php for ($i = 1; $i <= 11; $i++): ?>
+        <div class="order-2 lg:order-1 flex flex-col gap-4 mt-12 lg:mt-0">
+            <?php for ($i = 1; $i <= 7; $i++): ?>
                 <img
                     class="w-full lg:w-[300px] aspect-square rounded-3xl border-2 border-base-100 shadow-2xl"
-                    src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp?v='.SYS_VERSION) ?>"
+                    src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp?v=' . SYS_VERSION) ?>"
                     alt="About Picture"
                     loading="lazy">
             <?php endfor; ?>
         </div>
     </article>
+
+    <div class="flex flex-wrap gap-4 mt-4 lg:mt-12 justify-center">
+        <?php for ($i = 8; $i <= 11; $i++): ?>
+            <img
+                class="w-full lg:w-[300px] aspect-square rounded-3xl border-2 border-base-100 shadow-2xl"
+                src="<?= base_url('gfx/webp/about_' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.webp?v=' . SYS_VERSION) ?>"
+                alt="About Picture"
+                loading="lazy">
+        <?php endfor; ?>
+    </div>
+
+    <?php
+    $metricsByKey = [];
+    foreach (($metrics ?? []) as $metric) {
+        if (isset($metric['metric_key'])) {
+            $metricsByKey[$metric['metric_key']] = (string) ($metric['metric_value'] ?? '');
+        }
+    }
+
+    $hits = (int) ($metricsByKey['hits'] ?? 0);
+    $lastUpdatedRaw = $metricsByKey['last_updated'] ?? '';
+    $lastUpdatedTs = strtotime($lastUpdatedRaw);
+    $lastUpdatedText = ($lastUpdatedTs !== false) ? date('l, d F Y', $lastUpdatedTs) : 'N/A';
+    ?>
+    <aside class="mt-12 text-center text-sm text-base-content/70">
+        Proudly served
+        <span class="font-bold text-info"><?= esc((string) $hits) ?> times</span>
+        and last updated:
+        <span class="font-bold text-info"><?= esc($lastUpdatedText) ?></span>
+    </aside>
 </section>
 
 <?= $this->endSection() ?>
