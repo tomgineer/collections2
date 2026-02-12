@@ -4,12 +4,6 @@ use CodeIgniter\Model;
 use Config\Database;
 
 class AjaxModel extends Model {
-    protected $db;
-
-    public function __construct() {
-        parent::__construct();
-        $this->db = Database::connect();
-    }
 
 /**
  * Searches media records by creator or title using SQL LIKE matching.

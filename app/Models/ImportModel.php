@@ -4,13 +4,13 @@ use CodeIgniter\Model;
 use Config\Database;
 
 class ImportModel extends Model {
-    protected $db;
 
-    public function __construct() {
-        parent::__construct();
-        $this->db = Database::connect();
-    }
-
+/**
+ * Runs the import pipeline when exported Obsidian HTML files have changed.
+ *
+ * If changes are detected, this imports files into `media`, refreshes media
+ * type stats, and removes runtime artifacts.
+ */
 public function initImport(): void {
     if ( $this->checkObsidianHtml() ) {
         $this->importFilesToDatabase();

@@ -4,12 +4,6 @@ use CodeIgniter\Model;
 use Config\Database;
 
 class ContentModel extends Model {
-    protected $db;
-
-    public function __construct() {
-        parent::__construct();
-        $this->db = Database::connect();
-    }
 
 /**
  * Get all media types ordered by position.
