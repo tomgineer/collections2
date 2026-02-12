@@ -2,9 +2,7 @@
     <tr>
         <th class="font-heading text-lg lg:text-xl text-base-content">Title</th>
         <th class="font-heading text-lg lg:text-xl text-base-content">Collection</th>
-        <?php if ($alias === 'arkas'): ?>
-            <th>&nbsp;</th>
-        <?php endif; ?>
+        <th>&nbsp;</th>
     </tr>
 </thead>
 <tbody>
@@ -12,14 +10,10 @@
         <tr>
             <td class="font-semibold"><?= esc($item['title']) ?></td>
             <td class="text-base-content/80"><?= esc($item['collection']) ?></td>
-            <?php
-                $searchQuery = trim('Αρκάς ' . $item['title']);
-                $googleUrl = 'https://www.google.com/search?' . http_build_query(['q' => $searchQuery]);
-            ?>
             <td class="text-right">
                 <a
                     class="btn btn-sm btn-circle btn-soft btn-info"
-                    href="<?= esc($googleUrl, 'attr') ?>"
+                    href="<?= esc($item['search_query']) ?>"
                     target="_blank"
                     rel="noopener noreferrer">
 

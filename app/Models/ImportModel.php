@@ -192,6 +192,7 @@ private function importFilesToDatabase(): void {
                 'title' => $title,
                 'creator' => $creator,
                 'collection' => $collection,
+                'search_query' => $this->buildSearchQuery($mediaTypeId, $title, $creator, $collection),
             ];
         }
     }
@@ -205,6 +206,28 @@ private function importFilesToDatabase(): void {
     $this->db->table('media')->insertBatch($rowsToInsert);
     $this->calcMediaTypeStats();
     $this->db->transComplete();
+}
+
+/**
+ * Build a full Google search URL for an item and store it in `media.search_query`.
+ */
+private function buildSearchQuery(int $mediaTypeId, string $title, string $creator = '', string $collection = ''): string {
+    $query = '';
+
+    if ($mediaTypeId === 1) { // cds
+        $searchCreator = ($creator === '---') ? 'Various Artists' : $creator;
+        $query = trim($searchCreator . ' ' . $title . ' CD tracklist');
+    } elseif ($mediaTypeId === 2) { // books
+        $query = trim($creator . ' ' . $title . ' book');
+    } elseif ($mediaTypeId === 3) { // arkas
+        $query = trim('Αρκάς ' . $title);
+    } elseif ($mediaTypeId === 4) { // blu-rays
+        $query = trim($title . ' movie');
+    } else {
+        $query = trim($title . ' ' . $creator . ' ' . $collection);
+    }
+
+    return 'https://www.google.com/search?' . http_build_query(['q' => $query]);
 }
 
 /**
