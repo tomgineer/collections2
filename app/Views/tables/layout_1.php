@@ -9,7 +9,7 @@
     <?php foreach ($media as $item): ?>
         <tr>
             <td class="font-semibold">
-                <?php if ($item['creator'] === '---'): ?>
+                <?php if ($item['creator'] === 'Various Artists'): ?>
                     <span class="badge badge-xs lg:badge-sm badge-dash badge-info h-auto leading-tight text-center py-1">
                         Various Artists
                     </span>
