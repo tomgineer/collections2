@@ -12,7 +12,7 @@ class ImportModel extends Model {
  * type stats, and removes runtime artifacts.
  */
 public function initImport(): void {
-    if ( $this->checkObsidianHtml() ) {
+    if ($this->checkImportSources()) {
         $this->importFilesToDatabase();
         $this->calcMediaTypeStats();
         $this->clearRunTimeArtifacts();
@@ -20,44 +20,52 @@ public function initImport(): void {
     }
 }
 /**
- * Checks the obsidian_html export directory for HTML file timestamp changes.
+ * Checks import source files for timestamp changes.
  *
  * @return bool True when the current file state differs from the stored manifest.
  */
-private function checkObsidianHtml(): bool {
-    $directory = WRITEPATH . 'obsidian_html';
-    $manifestPath = $directory . DIRECTORY_SEPARATOR . 'manifest.json';
-
-    if (!is_dir($directory)) {
-        return false;
-    }
-
+private function checkImportSources(): bool {
+    $htmlDirectory = WRITEPATH . 'obsidian_html';
+    $jsonPath = WRITEPATH . 'json' . DIRECTORY_SEPARATOR . 'music.json';
+    $manifestPath = WRITEPATH . 'import-manifest.json';
     $current = [];
-    $entries = @scandir($directory);
-    if ($entries === false) {
-        return false;
+
+    if (is_dir($htmlDirectory)) {
+        $entries = @scandir($htmlDirectory);
+        if ($entries !== false) {
+            foreach ($entries as $entry) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+
+                $path = $htmlDirectory . DIRECTORY_SEPARATOR . $entry;
+                if (!is_file($path)) {
+                    continue;
+                }
+
+                if (strtolower(pathinfo($entry, PATHINFO_EXTENSION)) !== 'html') {
+                    continue;
+                }
+
+                $mtime = @filemtime($path);
+                if ($mtime === false) {
+                    continue;
+                }
+
+                $current['obsidian_html/' . $entry] = (int) $mtime;
+            }
+        }
     }
 
-    foreach ($entries as $entry) {
-        if ($entry === '.' || $entry === '..') {
-            continue;
+    if (is_file($jsonPath)) {
+        $mtime = @filemtime($jsonPath);
+        if ($mtime !== false) {
+            $current['json/music.json'] = (int) $mtime;
         }
+    }
 
-        $path = $directory . DIRECTORY_SEPARATOR . $entry;
-        if (!is_file($path)) {
-            continue;
-        }
-
-        if (strtolower(pathinfo($entry, PATHINFO_EXTENSION)) !== 'html') {
-            continue;
-        }
-
-        $mtime = @filemtime($path);
-        if ($mtime === false) {
-            continue;
-        }
-
-        $current[$entry] = (int) $mtime;
+    if ($current === []) {
+        return false;
     }
 
     ksort($current);
@@ -95,10 +103,10 @@ private function checkObsidianHtml(): bool {
 }
 
 /**
- * Imports Obsidian-exported collection HTML tables into the `media` table.
+ * Imports collection source files into the `media` table.
  *
- * Expected filenames are fixed and mapped to `media_type_id`:
- * - cds-collection.html => 1
+ * Expected sources are fixed and mapped to `media_type_id`:
+ * - writable/json/music.json => 1
  * - books-collection.html => 2
  * - arkas-collection.html => 3
  * - blu-ray-collection.html => 4
@@ -109,18 +117,18 @@ private function checkObsidianHtml(): bool {
  */
 private function importFilesToDatabase(): void {
     $directory = WRITEPATH . 'obsidian_html';
-    if (!is_dir($directory)) {
-        return;
-    }
-
     $fileToTypeId = [
-        'cds-collection.html' => 1,
         'books-collection.html' => 2,
         'arkas-collection.html' => 3,
         'blu-ray-collection.html' => 4,
     ];
 
     $rowsToInsert = [];
+    $this->importJson($rowsToInsert);
+
+    if (!is_dir($directory) && $rowsToInsert === []) {
+        return;
+    }
 
     foreach ($fileToTypeId as $fileName => $mediaTypeId) {
         $rawPath = $directory . DIRECTORY_SEPARATOR . $fileName;
@@ -207,6 +215,59 @@ private function importFilesToDatabase(): void {
     $this->db->table('media')->insertBatch($rowsToInsert);
     $this->calcMediaTypeStats();
     $this->db->transComplete();
+}
+
+/**
+ * Imports CDs from writable/json/music.json into the `media` rows buffer.
+ *
+ * Expected JSON row shape:
+ * - artist => creator
+ * - album => title
+ * - format => optional filter, only `CD` rows are imported when present
+ *
+ * @param array<int, array<string, mixed>> $rowsToInsert
+ */
+private function importJson(array &$rowsToInsert): void {
+    $jsonPath = WRITEPATH . 'json' . DIRECTORY_SEPARATOR . 'music.json';
+    if (!is_file($jsonPath)) {
+        return;
+    }
+
+    $raw = @file_get_contents($jsonPath);
+    if ($raw === false) {
+        return;
+    }
+
+    $decoded = json_decode($raw, true);
+    if (!is_array($decoded)) {
+        return;
+    }
+
+    foreach ($decoded as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $format = trim((string) ($row['format'] ?? ''));
+        if ($format !== '' && strcasecmp($format, 'CD') !== 0) {
+            continue;
+        }
+
+        $creator = trim((string) ($row['artist'] ?? ''));
+        $title = trim((string) ($row['album'] ?? ''));
+
+        if ($title === '') {
+            continue;
+        }
+
+        $rowsToInsert[] = [
+            'media_type_id' => 1,
+            'title' => $title,
+            'creator' => $creator,
+            'collection' => '',
+            'search_query' => $this->buildSearchQuery(1, $title, $creator, ''),
+        ];
+    }
 }
 
 /**
