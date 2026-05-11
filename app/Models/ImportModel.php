@@ -26,7 +26,7 @@ public function initImport(): void {
  */
 private function checkImportSources(): bool {
     $htmlDirectory = WRITEPATH . 'obsidian_html';
-    $jsonPath = WRITEPATH . 'json' . DIRECTORY_SEPARATOR . 'music.json';
+    $jsonDirectory = WRITEPATH . 'json';
     $manifestPath = WRITEPATH . 'import-manifest.json';
     $current = [];
 
@@ -57,10 +57,15 @@ private function checkImportSources(): bool {
         }
     }
 
-    if (is_file($jsonPath)) {
+    foreach (['music.json', 'movies.json', 'shows.json'] as $jsonFile) {
+        $jsonPath = $jsonDirectory . DIRECTORY_SEPARATOR . $jsonFile;
+        if (!is_file($jsonPath)) {
+            continue;
+        }
+
         $mtime = @filemtime($jsonPath);
         if ($mtime !== false) {
-            $current['json/music.json'] = (int) $mtime;
+            $current['json/' . $jsonFile] = (int) $mtime;
         }
     }
 
@@ -109,22 +114,23 @@ private function checkImportSources(): bool {
  * - writable/json/music.json => 1
  * - books-collection.html => 2
  * - arkas-collection.html => 3
- * - blu-ray-collection.html => 4
+ * - writable/json/movies.json => 4
+ * - writable/json/shows.json => 4
  *
- * For each file, the first table is parsed and row values are read by fixed
- * column order, then normalized and inserted. Existing `media` rows are
- * replaced in a transaction (`truncate` + `insertBatch`).
+ * HTML-backed media types still parse the first table by fixed column order,
+ * then normalize and insert rows. Existing `media` rows are replaced in a
+ * transaction (`truncate` + `insertBatch`).
  */
 private function importFilesToDatabase(): void {
     $directory = WRITEPATH . 'obsidian_html';
     $fileToTypeId = [
         'books-collection.html' => 2,
         'arkas-collection.html' => 3,
-        'blu-ray-collection.html' => 4,
     ];
 
     $rowsToInsert = [];
-    $this->importJson($rowsToInsert);
+    $this->importMusicJson($rowsToInsert);
+    $this->importBluRayJson($rowsToInsert);
 
     if (!is_dir($directory) && $rowsToInsert === []) {
         return;
@@ -187,9 +193,6 @@ private function importFilesToDatabase(): void {
                 // Title | Series
                 $title = $cells[0] ?? '';
                 $collection = $cells[1] ?? '';
-            } elseif ($fileName === 'blu-ray-collection.html') {
-                // Title
-                $title = $cells[0] ?? '';
             }
 
             if ($title === '') {
@@ -227,7 +230,7 @@ private function importFilesToDatabase(): void {
  *
  * @param array<int, array<string, mixed>> $rowsToInsert
  */
-private function importJson(array &$rowsToInsert): void {
+private function importMusicJson(array &$rowsToInsert): void {
     $jsonPath = WRITEPATH . 'json' . DIRECTORY_SEPARATOR . 'music.json';
     if (!is_file($jsonPath)) {
         return;
@@ -269,6 +272,102 @@ private function importJson(array &$rowsToInsert): void {
         ];
     }
 }
+
+/**
+ * Imports Blu-ray movies and shows from JSON files into the `media` rows buffer.
+ *
+ * Expected JSON row shapes:
+ * - movies.json: movie => title
+ * - shows.json: show + season => "Show - Season XX"
+ *
+ * @param array<int, array<string, mixed>> $rowsToInsert
+ */
+private function importBluRayJson(array &$rowsToInsert): void {
+    $jsonDirectory = WRITEPATH . 'json';
+
+    $moviePath = $jsonDirectory . DIRECTORY_SEPARATOR . 'movies.json';
+    $movieRows = $this->decodeJsonFile($moviePath);
+    foreach ($movieRows as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $format = trim((string) ($row['format'] ?? ''));
+        if ($format !== '' && strcasecmp($format, 'Blu-Ray') !== 0 && strcasecmp($format, 'DVD') !== 0) {
+            continue;
+        }
+
+        $title = trim((string) ($row['movie'] ?? ''));
+        if (strcasecmp($format, 'DVD') === 0) {
+            $title = trim($title . ' [DVD]');
+        }
+
+        if ($title === '') {
+            continue;
+        }
+
+        $rowsToInsert[] = [
+            'media_type_id' => 4,
+            'title' => $title,
+            'creator' => '',
+            'collection' => '',
+            'search_query' => $this->buildSearchQuery(4, $title, '', ''),
+        ];
+    }
+
+    $showPath = $jsonDirectory . DIRECTORY_SEPARATOR . 'shows.json';
+    $showRows = $this->decodeJsonFile($showPath);
+    foreach ($showRows as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $format = trim((string) ($row['format'] ?? ''));
+        if ($format !== '' && strcasecmp($format, 'Blu-Ray') !== 0 && strcasecmp($format, 'DVD') !== 0) {
+            continue;
+        }
+
+        $show = trim((string) ($row['show'] ?? ''));
+        $season = trim((string) ($row['season'] ?? ''));
+        $title = trim($show . ' - ' . $season, ' -');
+        if (strcasecmp($format, 'DVD') === 0) {
+            $title = trim($title . ' [DVD]');
+        }
+
+        if ($title === '') {
+            continue;
+        }
+
+        $rowsToInsert[] = [
+            'media_type_id' => 4,
+            'title' => $title,
+            'creator' => '',
+            'collection' => '',
+            'search_query' => $this->buildSearchQuery(4, $title, '', ''),
+        ];
+    }
+}
+
+/**
+ * Decode a JSON file into an array payload or return an empty array on failure.
+ *
+ * @return array<int|string, mixed>
+ */
+private function decodeJsonFile(string $path): array {
+    if (!is_file($path)) {
+        return [];
+    }
+
+    $raw = @file_get_contents($path);
+    if ($raw === false) {
+        return [];
+    }
+
+    $decoded = json_decode($raw, true);
+
+    return is_array($decoded) ? $decoded : [];
+}
+
 
 /**
  * Build a full Google search URL for an item and store it in `media.search_query`.

@@ -1,7 +1,9 @@
 {
-    "updated_at": 1778484585,
+    "updated_at": 1778485499,
     "files": {
-        "json/music.json": 1778483373,
+        "json/movies.json": 1778485479,
+        "json/music.json": 1778485479,
+        "json/shows.json": 1778485479,
         "obsidian_html/arkas-collection.html": 1765705054,
         "obsidian_html/blu-ray-collection.html": 1775332716,
         "obsidian_html/books-collection.html": 1765705054,
