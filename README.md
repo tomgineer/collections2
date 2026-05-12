@@ -2,7 +2,7 @@
 
 A lightweight personal media catalog built with CodeIgniter 4.
 
-Collections 2 imports HTML table exports from Obsidian, stores them in MySQL, and serves fast searchable views for CDs, books, Blu-rays, and Arkas issues.
+Collections 2 imports HTML table exports from Obsidian, stores them in MySQL, and serves fast searchable views for Music, books, Blu-rays, and Arkas issues.
 
 ![Collections 2 Screenshot](screenshot.webp)
 
@@ -38,7 +38,7 @@ Collections 2 imports HTML table exports from Obsidian, stores them in MySQL, an
 ## Routes
 
 - `GET /` -> homepage
-- `GET /media/{alias}` -> media list by type
+- `GET /media/{alias}` -> media list by category
 - `GET /about` -> story page + import trigger
 - `GET /ajax/search?q=...` -> JSON search results (AJAX only)
 
@@ -86,14 +86,14 @@ Minimum required columns:
 
 - `media`
   - `id` (PK)
-  - `media_type_id` (int)
+  - `media_category_id` (int)
   - `title` (string)
   - `creator` (string, nullable/empty allowed)
   - `collection` (string, nullable/empty allowed)
-- `media_types`
+- `media_categories`
   - `id` (PK)
-  - `media_type` (string label)
-  - `alias` (route alias, e.g. `cds`, `books`, `arkas`, `blu-rays`)
+  - `title` (string label)
+  - `alias` (route alias, e.g. `music`, `books`, `arkas`, `blu-rays`)
   - `position` (int, for menu ordering)
   - `item_msrp` (numeric)
   - `items_count` (int)
@@ -101,8 +101,8 @@ Minimum required columns:
 
 Important:
 
-- `media.media_type_id` must reference `media_types.id`.
-- Footer and navigation depend on `media_types` records existing.
+- `media.media_category_id` must reference `media_categories.id`.
+- Footer and navigation depend on `media_categories` records existing.
 
 ### 4. Build frontend assets
 
@@ -136,7 +136,7 @@ Collections 2 expects Obsidian HTML exports in:
 
 Expected filenames:
 
-- `cds-collection.html`
+- `music.json`
 - `books-collection.html`
 - `arkas-collection.html`
 - `blu-ray-collection.html`

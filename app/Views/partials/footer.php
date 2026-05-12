@@ -4,6 +4,9 @@
         'fallback' => <<<'SVG'
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-7 lg:size-10"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M7 12a5 5 0 0 1 5 -5" /><path d="M12 17a5 5 0 0 0 5 -5" /></svg>
 SVG,
+        'music' => <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-7 lg:size-10"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M7 12a5 5 0 0 1 5 -5" /><path d="M12 17a5 5 0 0 0 5 -5" /></svg>
+SVG,
         'books' => <<<'SVG'
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-7 lg:size-10"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></svg>
 SVG,
@@ -45,7 +48,7 @@ SVG,
                     <div class="stat-figure text-secondary">
                         <?= $iconSvg ?>
                     </div>
-                    <div class="stat-title text-base"><?= esc((string) ($media['media_type'] ?? 'Media')) ?></div>
+                    <div class="stat-title text-base"><?= esc((string) ($media['title'] ?? 'Media')) ?></div>
                     <div class="stat-value text-base-content text-2xl lg:text-3xl"><?= number_format($totalMsrp, 0, ',', '.') ?> €</div>
                     <div class="stat-desc text-sm"><?= $descText ?></div>
                     <div class="stat-desc text-sm"><?= $descTextExt ?></div>

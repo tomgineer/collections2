@@ -11,7 +11,7 @@
                 <h1>The Story</h1>
 
                 <p>
-                    When I started my collection, as expected, I had only a few CDs, a few movies, books, and issues of Arkas. I remembered exactly what I owned, and when I wanted to buy something it was easy to avoid buying something I already had.
+                    When I started my collection, as expected, I had only a few music albums, a few movies, books, and issues of Arkas. I remembered exactly what I owned, and when I wanted to buy something it was easy to avoid buying something I already had.
                 </p>
 
                 <p>
@@ -19,11 +19,11 @@
                 </p>
 
                 <p>
-                    The problem became bigger when I started collecting CDs, which was also a hobby that began at a very young age. At some point my collection was destroyed, and I rebuilt it, this time twice as large. It became impossible to remember what I had already bought, which resulted in me buying some duplicates.
+                    The problem became bigger when I started collecting music, which was also a hobby that began at a very young age. At some point my collection was destroyed, and I rebuilt it, this time twice as large. It became impossible to remember what I had already bought, which resulted in me buying some duplicates.
                 </p>
 
                 <p>
-                    All my notes are in Obsidian, so naturally I created four Markdown files there, one for each category (CDs, Blu-Rays, Books, Arkas). The process was extremely simple and still works to this day. I created one table per page and simply entered the discs or anything else I bought. I would not put the CDs in their place, for example, until I had recorded them. Since we are talking about plain text files, this only takes a few minutes. I also kept the format very simple, such as Artist | Title. In my life, simple things work; complex ones I stop using after a while.
+                    All my notes are in Obsidian, so naturally I created four Markdown files there, one for each category (Music, Blu-Rays, Books, Arkas). The process was extremely simple and still works to this day. I created one table per page and simply entered the albums or anything else I bought. I would not put the music in its place, for example, until I had recorded it. Since we are talking about plain text files, this only takes a few minutes. I also kept the format very simple, such as Artist | Title. In my life, simple things work; complex ones I stop using after a while.
                 </p>
 
                 <p>

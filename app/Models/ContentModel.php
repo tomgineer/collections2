@@ -6,21 +6,21 @@ use Config\Database;
 class ContentModel extends Model {
 
 /**
- * Get all media types ordered by position.
+ * Get all media categories ordered by position.
  *
  * @return list<array<string, mixed>>
  */
 public function getMediaTypes(): array {
-    return $this->db->table('media_types')
+    return $this->db->table('media_categories')
         ->orderBy('position', 'ASC')
         ->get()
         ->getResultArray();
 }
 
 /**
- * Get paginated media rows for a specific media type.
+ * Get paginated media rows for a specific media category.
  *
- * @param int $mediaTypeId Media type identifier.
+ * @param int $mediaTypeId Media category identifier.
  * @param int $offset Pagination offset.
  * @param int $limit Number of rows to return.
  *
@@ -28,17 +28,16 @@ public function getMediaTypes(): array {
  */
 public function getMedia(int $mediaTypeId, int $offset = 0, int $limit = 50): array {
     return $this->db->table('media')
-        ->where('media_type_id', $mediaTypeId)
+        ->where('media_category_id', $mediaTypeId)
         ->orderBy('creator', 'ASC')
         ->orderBy('title', 'ASC')
-        ->orderBy('collection', 'ASC')
         ->limit($limit, $offset)
         ->get()
         ->getResultArray();
 }
 
 /**
- * Translate a media type field value to another field value.
+ * Translate a media category field value to another field value.
  *
  * Example: translateMediaType('alias', 'id', $alias).
  *
@@ -49,7 +48,7 @@ public function getMedia(int $mediaTypeId, int $offset = 0, int $limit = 50): ar
  * @return string|null Translated value, or null when no match exists.
  */
 public function translateMediaType(string $from, string $to, string $value): ?string {
-    $row = $this->db->table('media_types')
+    $row = $this->db->table('media_categories')
         ->select($to)
         ->where($from, $value)
         ->get()
@@ -59,24 +58,24 @@ public function translateMediaType(string $from, string $to, string $value): ?st
 }
 
 /**
- * Count all media rows for a specific media type.
+ * Count all media rows for a specific media category.
  *
- * @param int $mediaTypeId Media type identifier.
+ * @param int $mediaTypeId Media category identifier.
  *
  * @return int
  */
 public function getMediaCount(int $mediaTypeId): int {
     return (int) $this->db->table('media')
-        ->where('media_type_id', $mediaTypeId)
+        ->where('media_category_id', $mediaTypeId)
         ->countAllResults();
 }
 
 /**
- * Get the most popular creators for a media type.
+ * Get the most popular creators for a media category.
  *
  * Excludes placeholder creators named "---".
  *
- * @param int $type Media type identifier.
+ * @param int $type Media category identifier.
  * @param int $limit Maximum number of creators to return.
  *
  * @return list<array<string, mixed>>
@@ -86,7 +85,7 @@ public function mostPopular(int $type = 1, int $limit = 17): array {
 
     return $this->db->table('media')
         ->select('creator, COUNT(*) as count')
-        ->where('media_type_id', $type)
+        ->where('media_category_id', $type)
         ->where('creator !=', '---')
         ->groupBy('creator')
         ->orderBy('count', 'DESC')

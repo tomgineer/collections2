@@ -29,10 +29,9 @@ public function search(string $term): array {
         ->select([
             'm.creator',
             'm.title',
-            'm.collection',
-            'mt.media_type AS type',
+            'mc.title AS type',
         ])
-        ->join('media_types mt', 'mt.id = m.media_type_id', 'left')
+        ->join('media_categories mc', 'mc.id = m.media_category_id', 'left')
         ->groupStart()
             ->like('m.creator', $term, 'both')
             ->orLike('m.title', $term, 'both')

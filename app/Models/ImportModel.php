@@ -9,7 +9,7 @@ class ImportModel extends Model {
  * Runs the import pipeline when exported Obsidian HTML files have changed.
  *
  * If changes are detected, this imports files into `media`, refreshes media
- * type stats, and removes runtime artifacts.
+ * category stats, and removes runtime artifacts.
  */
 public function initImport(): void {
     if ($this->checkImportSources()) {
@@ -110,7 +110,7 @@ private function checkImportSources(): bool {
 /**
  * Imports collection source files into the `media` table.
  *
- * Expected sources are fixed and mapped to `media_type_id`:
+ * Expected sources are fixed and mapped to `media_category_id`:
  * - writable/json/music.json => 1
  * - books-collection.html => 2
  * - arkas-collection.html => 3
@@ -130,7 +130,8 @@ private function importFilesToDatabase(): void {
 
     $rowsToInsert = [];
     $this->importMusicJson($rowsToInsert);
-    $this->importBluRayJson($rowsToInsert);
+    $this->importMoviesJson($rowsToInsert);
+    $this->importShowsJson($rowsToInsert);
 
     if (!is_dir($directory) && $rowsToInsert === []) {
         return;
@@ -179,20 +180,13 @@ private function importFilesToDatabase(): void {
 
             $title = '';
             $creator = '';
-            $collection = '';
-
-            if ($fileName === 'cds-collection.html') {
-                // Artist | Title
-                $creator = $cells[0] ?? '';
-                $title = $cells[1] ?? '';
-            } elseif ($fileName === 'books-collection.html') {
+            if ($fileName === 'books-collection.html') {
                 // Title | Author
                 $title = $cells[0] ?? '';
                 $creator = $cells[1] ?? '';
             } elseif ($fileName === 'arkas-collection.html') {
-                // Title | Series
+                // Title | Series (series is no longer stored in `media`)
                 $title = $cells[0] ?? '';
-                $collection = $cells[1] ?? '';
             }
 
             if ($title === '') {
@@ -200,11 +194,11 @@ private function importFilesToDatabase(): void {
             }
 
             $rowsToInsert[] = [
-                'media_type_id' => $mediaTypeId,
+                'media_category_id' => $mediaTypeId,
                 'title' => $title,
                 'creator' => $creator,
-                'collection' => $collection,
-                'search_query' => $this->buildSearchQuery($mediaTypeId, $title, $creator, $collection),
+                'format' => '',
+                'updated' => date('Y-m-d H:i:s'),
             ];
         }
     }
@@ -221,7 +215,7 @@ private function importFilesToDatabase(): void {
 }
 
 /**
- * Imports CDs from writable/json/music.json into the `media` rows buffer.
+ * Imports Music entries from writable/json/music.json into the `media` rows buffer.
  *
  * Expected JSON row shape:
  * - artist => creator
@@ -264,25 +258,24 @@ private function importMusicJson(array &$rowsToInsert): void {
         }
 
         $rowsToInsert[] = [
-            'media_type_id' => 1,
+            'media_category_id' => 1,
             'title' => $title,
             'creator' => $creator,
-            'collection' => '',
-            'search_query' => $this->buildSearchQuery(1, $title, $creator, ''),
+            'format' => 'CD',
+            'updated' => date('Y-m-d H:i:s'),
         ];
     }
 }
 
 /**
- * Imports Blu-ray movies and shows from JSON files into the `media` rows buffer.
+ * Imports Blu-ray movies from `movies.json` into the `media` rows buffer.
  *
- * Expected JSON row shapes:
- * - movies.json: movie => title
- * - shows.json: show + season => "Show - Season XX"
+ * Expected JSON row shape:
+ * - movie => title
  *
  * @param array<int, array<string, mixed>> $rowsToInsert
  */
-private function importBluRayJson(array &$rowsToInsert): void {
+private function importMoviesJson(array &$rowsToInsert): void {
     $jsonDirectory = WRITEPATH . 'json';
 
     $moviePath = $jsonDirectory . DIRECTORY_SEPARATOR . 'movies.json';
@@ -292,28 +285,36 @@ private function importBluRayJson(array &$rowsToInsert): void {
             continue;
         }
 
-        $format = trim((string) ($row['format'] ?? ''));
-        if ($format !== '' && strcasecmp($format, 'Blu-Ray') !== 0 && strcasecmp($format, 'DVD') !== 0) {
+        $format = $this->resolveVideoFormat($row['format'] ?? '');
+        if ($format === '') {
             continue;
         }
 
         $title = trim((string) ($row['movie'] ?? ''));
-        if (strcasecmp($format, 'DVD') === 0) {
-            $title = trim($title . ' [DVD]');
-        }
-
         if ($title === '') {
             continue;
         }
 
         $rowsToInsert[] = [
-            'media_type_id' => 4,
+            'media_category_id' => 4,
             'title' => $title,
             'creator' => '',
-            'collection' => '',
-            'search_query' => $this->buildSearchQuery(4, $title, '', ''),
+            'format' => $format,
+            'updated' => date('Y-m-d H:i:s'),
         ];
     }
+}
+
+/**
+ * Imports Blu-ray shows from `shows.json` into the `media` rows buffer.
+ *
+ * Expected JSON row shape:
+ * - show + season => "Show - Season XX"
+ *
+ * @param array<int, array<string, mixed>> $rowsToInsert
+ */
+private function importShowsJson(array &$rowsToInsert): void {
+    $jsonDirectory = WRITEPATH . 'json';
 
     $showPath = $jsonDirectory . DIRECTORY_SEPARATOR . 'shows.json';
     $showRows = $this->decodeJsonFile($showPath);
@@ -322,30 +323,46 @@ private function importBluRayJson(array &$rowsToInsert): void {
             continue;
         }
 
-        $format = trim((string) ($row['format'] ?? ''));
-        if ($format !== '' && strcasecmp($format, 'Blu-Ray') !== 0 && strcasecmp($format, 'DVD') !== 0) {
+        $format = $this->resolveVideoFormat($row['format'] ?? '');
+        if ($format === '') {
             continue;
         }
 
         $show = trim((string) ($row['show'] ?? ''));
         $season = trim((string) ($row['season'] ?? ''));
         $title = trim($show . ' - ' . $season, ' -');
-        if (strcasecmp($format, 'DVD') === 0) {
-            $title = trim($title . ' [DVD]');
-        }
-
         if ($title === '') {
             continue;
         }
 
         $rowsToInsert[] = [
-            'media_type_id' => 4,
+            'media_category_id' => 4,
             'title' => $title,
             'creator' => '',
-            'collection' => '',
-            'search_query' => $this->buildSearchQuery(4, $title, '', ''),
+            'format' => $format,
+            'updated' => date('Y-m-d H:i:s'),
         ];
     }
+}
+
+/**
+ * Normalize a movie/show format value to the stored media format.
+ */
+private function resolveVideoFormat(mixed $value): string {
+    $format = trim((string) $value);
+    if ($format === '') {
+        return 'Blu-Ray';
+    }
+
+    if (strcasecmp($format, 'Blu-Ray') === 0) {
+        return 'Blu-Ray';
+    }
+
+    if (strcasecmp($format, 'DVD') === 0) {
+        return 'DVD';
+    }
+
+    return '';
 }
 
 /**
@@ -368,29 +385,6 @@ private function decodeJsonFile(string $path): array {
     return is_array($decoded) ? $decoded : [];
 }
 
-
-/**
- * Build a full Google search URL for an item and store it in `media.search_query`.
- */
-private function buildSearchQuery(int $mediaTypeId, string $title, string $creator = '', string $collection = ''): string {
-    $query = '';
-
-    if ($mediaTypeId === 1) { // cds
-        $searchCreator = ($creator === '---') ? 'Various Artists' : $creator;
-        $query = trim($searchCreator . ' ' . $title . ' CD tracklist');
-    } elseif ($mediaTypeId === 2) { // books
-        $query = trim($creator . ' ' . $title . ' book');
-    } elseif ($mediaTypeId === 3) { // arkas
-        $query = trim('Αρκάς ' . $title);
-    } elseif ($mediaTypeId === 4) { // blu-rays
-        $query = trim($title . ' movie');
-    } else {
-        $query = trim($title . ' ' . $creator . ' ' . $collection);
-    }
-
-    return 'https://www.google.com/search?' . http_build_query(['q' => $query]);
-}
-
 /**
  * Persist the last successful import completion timestamp in `metrics`.
  */
@@ -404,19 +398,19 @@ private function updateLastUpdatedMetric(): void {
 }
 
 /**
- * Recalculate and persist per-media-type item counts and MSRP totals.
+ * Recalculate and persist per-category item counts and MSRP totals.
  */
 private function calcMediaTypeStats(): void {
     $sql = <<<SQL
-UPDATE media_types mt
+UPDATE media_categories mc
 LEFT JOIN (
-    SELECT media_type_id, COUNT(*) AS items_count
+    SELECT media_category_id, COUNT(*) AS items_count
     FROM media
-    GROUP BY media_type_id
-) m ON m.media_type_id = mt.id
+    GROUP BY media_category_id
+) m ON m.media_category_id = mc.id
 SET
-    mt.items_count = COALESCE(m.items_count, 0),
-    mt.total_msrp = COALESCE(m.items_count, 0) * mt.item_msrp
+    mc.items_count = COALESCE(m.items_count, 0),
+    mc.total_msrp = COALESCE(m.items_count, 0) * mc.item_msrp
 SQL;
 
     $this->db->query($sql);

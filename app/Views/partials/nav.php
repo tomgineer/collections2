@@ -22,7 +22,7 @@
                         <?php $link_url = site_url('media/' . $media['alias']) ?>
                         <li>
                             <a class="btn hover:btn-primary <?=($cur_url===$link_url?'btn-secondary':'btn-ghost')?>" href="<?=$link_url?>">
-                                <?= esc($media['media_type']) ?>
+                                <?= esc($media['title']) ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
@@ -69,7 +69,7 @@
                 <?php $link_url = site_url('media/' . $media['alias']) ?>
                 <li>
                     <a class="btn justify-start <?=($cur_url === $link_url ? 'btn-secondary' : 'btn-ghost')?>" href="<?=$link_url?>">
-                        <?= esc($media['media_type']) ?>
+                        <?= esc($media['title']) ?>
                     </a>
                 </li>
             <?php endforeach; ?>

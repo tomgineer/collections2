@@ -38,9 +38,9 @@ public function about(): string {
 }
 
 /**
- * Render a media listing page by media type alias.
+ * Render a media listing page by media category alias.
  *
- * @param string $alias Media type alias from the route.
+ * @param string $alias Media category alias from the route.
  *
  * @throws PageNotFoundException
  *
@@ -76,7 +76,7 @@ public function media(string $alias): string {
     $data = [
         'media' => $media,
         'alias' => $alias,
-        'label' => $contentModel->translateMediaType('alias', 'media_type', $alias) ?? 'Media',
+        'label' => $contentModel->translateMediaType('alias', 'title', $alias) ?? 'Media',
         'page' => $page,
         'perPage' => $perPage,
         'totalItems' => $totalItems,

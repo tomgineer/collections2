@@ -38,7 +38,7 @@
         <?php endforeach; ?>
     </ul>
 
-    <!-- Media Types -->
+    <!-- Media Categories -->
     <ul class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:mb-24">
         <?php foreach ($mediaTypes as $media): ?>
             <?php $link_url = site_url('media/' . $media['alias']) ?>
@@ -53,7 +53,7 @@
                     </div>
                     <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-secondary to-accent
                         bg-clip-text text-transparent py-4 px-6">
-                        <?= $media['media_type'] ?>
+                        <?= $media['title'] ?>
                     </h2>
                 </a>
             </li>
