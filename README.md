@@ -2,7 +2,7 @@
 
 A lightweight personal media catalog built with CodeIgniter 4.
 
-Collections 2 imports HTML table exports from Obsidian, stores them in MySQL, and serves fast searchable views for Music, books, Blu-rays, and Arkas issues.
+Collections 2 imports HTML table exports from Obsidian, stores them in MySQL, and serves fast searchable views for Music, books, movies, shows, and Arkas issues.
 
 ![Collections 2 Screenshot](screenshot.webp)
 
@@ -93,7 +93,7 @@ Minimum required columns:
 - `media_categories`
   - `id` (PK)
   - `title` (string label)
-  - `alias` (route alias, e.g. `music`, `books`, `arkas`, `blu-rays`)
+  - `alias` (route alias, e.g. `music`, `books`, `arkas`, `movies`, `shows`)
   - `position` (int, for menu ordering)
   - `item_msrp` (numeric)
   - `items_count` (int)
@@ -139,7 +139,8 @@ Expected filenames:
 - `music.json`
 - `books-collection.html`
 - `arkas-collection.html`
-- `blu-ray-collection.html`
+- `movies.json`
+- `shows.json`
 
 How it works:
 
@@ -147,7 +148,7 @@ How it works:
 2. `ImportModel::initImport()` compares file mtimes against `writable/obsidian_html/manifest.json`.
 3. If changed, importer parses the first table from each file.
 4. `media` table is refreshed and repopulated.
-5. Media type stats are recalculated and runtime cache/log/session artifacts are cleaned.
+5. Media category stats are recalculated and runtime cache/log/session artifacts are cleaned.
 
 ## Caching
 
@@ -173,7 +174,7 @@ Behavior:
 - Requires AJAX header (`X-Requested-With: XMLHttpRequest`).
 - Ignores terms shorter than 2 characters.
 - Searches `creator` and `title`.
-- Returns up to 15 rows with `creator`, `title`, `collection`, `type`.
+- Returns up to 15 rows with `creator`, `title`, `format`, `category`.
 
 ## Scripts
 

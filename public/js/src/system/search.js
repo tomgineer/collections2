@@ -128,7 +128,7 @@ export default function initSearch() {
  * Render either an empty-state notice or the full search results table.
  *
  * @param {HTMLElement} searchResults Results container element.
- * @param {Array<{creator?: string, title?: string, collection?: string, type?: string}>} rows Search rows.
+ * @param {Array<{creator?: string, title?: string, format?: string, category?: string}>} rows Search rows.
  * @param {string} term Search term.
  * @param {(value: unknown) => string} escapeHtml HTML escaping helper.
  * @param {(isVisible: boolean) => void} setSearchResultsVisible Results visibility helper.
@@ -145,24 +145,26 @@ function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsV
 
     const renderRows = rows.map((row) => `
         <tr>
-            <td>${highlightSearchTerm(row.creator, term, escapeHtml)}</td>
-            <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
-            <td class="hidden md:table-cell">${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
-            <td class="text-right">
-                <span class="badge badge-secondary badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">${highlightSearchTerm(row.creator, term, escapeHtml)}</td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">${highlightSearchTerm(row.title, term, escapeHtml)}</td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">
+                <span class="font-heading font-bold">${escapeHtml(row.category)}</span>
+            </td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">
+                <span class="badge badge-primary badge-sm font-heading font-bold whitespace-nowrap">${escapeHtml(row.format)}</span>
             </td>
         </tr>
     `).join('');
 
     searchResults.innerHTML = `
         <div class="overflow-x-auto mt-4">
-            <table class="table table-zebra lg:text-base">
+            <table class="table table-sm table-zebra lg:table-md lg:text-base">
                 <thead>
                     <tr>
-                        <th>Creator</th>
-                        <th>Title</th>
-                        <th class="hidden md:table-cell">Collection</th>
-                        <th class="text-right">Type</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Artist</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Title</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Category</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Format</th>
                     </tr>
                 </thead>
                 <tbody>${renderRows}</tbody>

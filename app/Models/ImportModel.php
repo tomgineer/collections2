@@ -115,7 +115,7 @@ private function checkImportSources(): bool {
  * - books-collection.html => 2
  * - arkas-collection.html => 3
  * - writable/json/movies.json => 4
- * - writable/json/shows.json => 4
+ * - writable/json/shows.json => 5
  *
  * HTML-backed media types still parse the first table by fixed column order,
  * then normalize and insert rows. Existing `media` rows are replaced in a
@@ -268,7 +268,7 @@ private function importMusicJson(array &$rowsToInsert): void {
 }
 
 /**
- * Imports Blu-ray movies from `movies.json` into the `media` rows buffer.
+ * Imports Movies from `movies.json` into the `media` rows buffer.
  *
  * Expected JSON row shape:
  * - movie => title
@@ -306,7 +306,7 @@ private function importMoviesJson(array &$rowsToInsert): void {
 }
 
 /**
- * Imports Blu-ray shows from `shows.json` into the `media` rows buffer.
+ * Imports Shows from `shows.json` into the `media` rows buffer.
  *
  * Expected JSON row shape:
  * - show + season => "Show - Season XX"
@@ -336,7 +336,7 @@ private function importShowsJson(array &$rowsToInsert): void {
         }
 
         $rowsToInsert[] = [
-            'media_category_id' => 4,
+            'media_category_id' => 5,
             'title' => $title,
             'creator' => '',
             'format' => $format,

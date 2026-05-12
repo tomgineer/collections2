@@ -13,7 +13,7 @@
             </div>
 
             <div class="flex-1 flex items-center">
-                <a href="<?= base_url() ?>" class="btn btn-ghost">
+                <a href="<?= base_url() ?>" class="btn btn-ghost px-1 lg:px-3">
                     <img class="h-8 w-auto" src="<?= base_url('gfx/logo.svg?v=' . SYS_VERSION) ?>" alt="Collections Logo">
                 </a>
 

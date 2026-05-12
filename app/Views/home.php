@@ -25,9 +25,9 @@
     </div>
 </section>
 
-<section class="max-w-7xl mx-auto p-4 mt-1 lg:mt-8">
-    <!-- Popular -->
-    <ul class="flex flex-wrap gap-1 mb-6 lg:mb-12">
+<!-- Popular -->
+<section class="max-w-7xl mx-auto p-4 mt-1 lg:mt-2">
+    <ul class="flex flex-wrap gap-1 mb-3 lg:mb-6">
         <?php foreach ($mostPopular as $popular): ?>
             <li>
                 <button class="btn btn-sm lg:btn-md" data-search-term="<?= esc($popular['creator']) ?>">
@@ -37,9 +37,11 @@
             </li>
         <?php endforeach; ?>
     </ul>
+</section>
 
-    <!-- Media Categories -->
-    <ul class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:mb-24">
+<!-- Media Categories -->
+<section class="max-w-5xl mx-auto p-4">
+    <ul class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-4 lg:mb-24">
         <?php foreach ($mediaTypes as $media): ?>
             <?php $link_url = site_url('media/' . $media['alias']) ?>
             <li class="bg-base-200 overflow-hidden rounded-2xl shadow">

@@ -1,158 +1,26 @@
-(() => {
-  // public/js/src/system/search.js
-  function initSearch() {
-    const searchInput = document.querySelector("[data-js-search]");
-    if (!searchInput) return;
-    const searchResults = document.querySelector("[data-js-results]");
-    if (!searchResults) return;
-    const clearButton = document.querySelector("[data-js-search-clear]");
-    if (!clearButton) return;
-    const baseUrl = document.querySelector('meta[name="base-url"]')?.content;
-    if (!baseUrl) return;
-    const minLength = 2;
-    const debounceMs = 250;
-    let debounceTimer = null;
-    let requestController = null;
-    const setSearchResultsVisible = (isVisible) => {
-      searchResults.classList.toggle("hidden", !isVisible);
-    };
-    const syncClearButtonVisibility = () => {
-      if (!clearButton) return;
-      const hasValue = searchInput.value.trim().length > 0;
-      clearButton.classList.toggle("hidden", !hasValue);
-    };
-    setSearchResultsVisible(false);
-    syncClearButtonVisibility();
-    const clearResults = () => {
-      searchResults.innerHTML = "";
-      setSearchResultsVisible(false);
-    };
-    const escapeHtml = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-    const renderError = () => {
-      searchResults.innerHTML = '<div class="alert alert-error mt-4"><span>Search failed. Please try again.</span></div>';
-      setSearchResultsVisible(false);
-    };
-    const runSearch = async (term) => {
-      if (requestController) {
-        requestController.abort();
-      }
-      requestController = new AbortController();
-      try {
-        const query = term;
-        const response = await fetch(
-          `${baseUrl}ajax/search?q=${encodeURIComponent(query)}`,
-          {
-            headers: { "X-Requested-With": "XMLHttpRequest" },
-            signal: requestController.signal
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        const rows = await response.json();
-        displayResults(searchResults, rows, query, escapeHtml, setSearchResultsVisible);
-      } catch (error) {
-        if (error.name === "AbortError") {
-          return;
-        }
-        renderError();
-      }
-    };
-    searchInput.addEventListener("input", () => {
-      const term = searchInput.value.trim();
-      syncClearButtonVisibility();
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-      if (term.length < minLength) {
-        if (requestController) {
-          requestController.abort();
-        }
-        clearResults();
-        return;
-      }
-      debounceTimer = setTimeout(() => {
-        runSearch(term);
-      }, debounceMs);
-    });
-    if (clearButton) {
-      clearButton.addEventListener("click", () => {
-        if (requestController) {
-          requestController.abort();
-        }
-        if (debounceTimer) {
-          clearTimeout(debounceTimer);
-        }
-        searchInput.value = "";
-        clearResults();
-        syncClearButtonVisibility();
-        searchInput.focus();
-      });
-    }
-  }
-  function displayResults(searchResults, rows, term, escapeHtml, setSearchResultsVisible) {
-    if (!Array.isArray(rows) || rows.length === 0) {
-      searchResults.innerHTML = "";
-      setSearchResultsVisible(false);
-      return;
-    }
-    setSearchResultsVisible(true);
-    const renderRows = rows.map((row) => `
+(()=>{function g(){let t=document.querySelector("[data-js-search]");if(!t)return;let r=document.querySelector("[data-js-results]");if(!r)return;let e=document.querySelector("[data-js-search-clear]");if(!e)return;let a=document.querySelector('meta[name="base-url"]')?.content;if(!a)return;let c=2,i=250,s=null,l=null,o=n=>{r.classList.toggle("hidden",!n)},u=()=>{if(!e)return;let n=t.value.trim().length>0;e.classList.toggle("hidden",!n)};o(!1),u();let m=()=>{r.innerHTML="",o(!1)},y=n=>String(n??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"),x=()=>{r.innerHTML='<div class="alert alert-error mt-4"><span>Search failed. Please try again.</span></div>',o(!1)},b=async n=>{l&&l.abort(),l=new AbortController;try{let p=n,d=await fetch(`${a}ajax/search?q=${encodeURIComponent(p)}`,{headers:{"X-Requested-With":"XMLHttpRequest"},signal:l.signal});if(!d.ok)throw new Error(`HTTP ${d.status}`);let T=await d.json();S(r,T,p,y,o)}catch(p){if(p.name==="AbortError")return;x()}};t.addEventListener("input",()=>{let n=t.value.trim();if(u(),s&&clearTimeout(s),n.length<c){l&&l.abort(),m();return}s=setTimeout(()=>{b(n)},i)}),e&&e.addEventListener("click",()=>{l&&l.abort(),s&&clearTimeout(s),t.value="",m(),u(),t.focus()})}function S(t,r,e,a,c){if(!Array.isArray(r)||r.length===0){t.innerHTML="",c(!1);return}c(!0);let i=r.map(s=>`
         <tr>
-            <td>${highlightSearchTerm(row.creator, term, escapeHtml)}</td>
-            <td>${highlightSearchTerm(row.title, term, escapeHtml)}</td>
-            <td class="hidden md:table-cell">${highlightSearchTerm(row.collection, term, escapeHtml)}</td>
-            <td class="text-right">
-                <span class="badge badge-secondary badge-sm font-heading font-bold">${escapeHtml(row.type)}</span>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">${f(s.creator,e,a)}</td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">${f(s.title,e,a)}</td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">
+                <span class="font-heading font-bold">${a(s.category)}</span>
+            </td>
+            <td class="px-2 py-2 lg:px-4 lg:py-3">
+                <span class="badge badge-primary badge-sm font-heading font-bold whitespace-nowrap">${a(s.format)}</span>
             </td>
         </tr>
-    `).join("");
-    searchResults.innerHTML = `
+    `).join("");t.innerHTML=`
         <div class="overflow-x-auto mt-4">
-            <table class="table table-zebra lg:text-base">
+            <table class="table table-sm table-zebra lg:table-md lg:text-base">
                 <thead>
                     <tr>
-                        <th>Creator</th>
-                        <th>Title</th>
-                        <th class="hidden md:table-cell">Collection</th>
-                        <th class="text-right">Type</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Artist</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Title</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Category</th>
+                        <th class="px-2 py-2 text-xs lg:px-4 lg:py-3 lg:text-sm">Format</th>
                     </tr>
                 </thead>
-                <tbody>${renderRows}</tbody>
+                <tbody>${i}</tbody>
             </table>
         </div>
-    `;
-  }
-  function highlightSearchTerm(value, term, escapeHtml) {
-    const text = String(value ?? "");
-    const query = String(term ?? "").trim();
-    if (!query) {
-      return escapeHtml(text);
-    }
-    const escapedRegexTerm = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`(${escapedRegexTerm})`, "gi");
-    const parts = text.split(regex);
-    return parts.map((part, index) => index % 2 === 1 ? `<mark class="bg-primary text-white px-1">${escapeHtml(part)}</mark>` : escapeHtml(part)).join("");
-  }
-
-  // public/js/src/system/autoSearch.js
-  function autoSearchByTerm() {
-    const searchInput = document.querySelector("[data-js-search]");
-    if (!searchInput) return;
-    const searchTermButtons = document.querySelectorAll("button[data-search-term]");
-    if (!searchTermButtons.length) return;
-    searchTermButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const term = button.dataset.searchTerm?.trim();
-        if (!term) return;
-        searchInput.value = term;
-        searchInput.dispatchEvent(new Event("input", { bubbles: true }));
-        searchInput.focus();
-      });
-    });
-  }
-
-  // public/js/src/app.js
-  initSearch();
-  autoSearchByTerm();
-})();
+    `}function f(t,r,e){let a=String(t??""),c=String(r??"").trim();if(!c)return e(a);let i=c.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),s=new RegExp(`(${i})`,"gi");return a.split(s).map((o,u)=>u%2===1?`<mark class="bg-primary text-white px-1">${e(o)}</mark>`:e(o)).join("")}function h(){let t=document.querySelector("[data-js-search]");if(!t)return;let r=document.querySelectorAll("button[data-search-term]");r.length&&r.forEach(e=>{e.addEventListener("click",()=>{let a=e.dataset.searchTerm?.trim();a&&(t.value=a,t.dispatchEvent(new Event("input",{bubbles:!0})),t.focus())})})}g();h();})();

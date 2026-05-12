@@ -23,7 +23,7 @@
                 </p>
 
                 <p>
-                    All my notes are in Obsidian, so naturally I created four Markdown files there, one for each category (Music, Blu-Rays, Books, Arkas). The process was extremely simple and still works to this day. I created one table per page and simply entered the albums or anything else I bought. I would not put the music in its place, for example, until I had recorded it. Since we are talking about plain text files, this only takes a few minutes. I also kept the format very simple, such as Artist | Title. In my life, simple things work; complex ones I stop using after a while.
+                    All my notes are in Obsidian, so naturally I created five Markdown files there, one for each category (Music, Movies, Shows, Books, Arkas). The process was extremely simple and still works to this day. I created one table per page and simply entered the albums or anything else I bought. I would not put the music in its place, for example, until I had recorded it. Since we are talking about plain text files, this only takes a few minutes. I also kept the format very simple, such as Artist | Title. In my life, simple things work; complex ones I stop using after a while.
                 </p>
 
                 <p>

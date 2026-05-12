@@ -29,7 +29,8 @@ public function search(string $term): array {
         ->select([
             'm.creator',
             'm.title',
-            'mc.title AS type',
+            'm.format',
+            'mc.title AS category',
         ])
         ->join('media_categories mc', 'mc.id = m.media_category_id', 'left')
         ->groupStart()

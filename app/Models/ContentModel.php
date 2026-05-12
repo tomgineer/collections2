@@ -73,7 +73,7 @@ public function getMediaCount(int $mediaTypeId): int {
 /**
  * Get the most popular creators for a media category.
  *
- * Excludes placeholder creators named "---".
+ * Excludes placeholder creators and aggregate labels.
  *
  * @param int $type Media category identifier.
  * @param int $limit Maximum number of creators to return.
@@ -87,6 +87,7 @@ public function mostPopular(int $type = 1, int $limit = 17): array {
         ->select('creator, COUNT(*) as count')
         ->where('media_category_id', $type)
         ->where('creator !=', '---')
+        ->where('creator !=', 'Various Artists')
         ->groupBy('creator')
         ->orderBy('count', 'DESC')
         ->limit($limit)
