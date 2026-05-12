@@ -178,26 +178,21 @@ private function importFilesToDatabase(): void {
                 continue;
             }
 
-            $title = '';
-            $creator = '';
-            if ($fileName === 'books-collection.html') {
-                // Title | Author
-                $title = $cells[0] ?? '';
-                $creator = $cells[1] ?? '';
-            } elseif ($fileName === 'arkas-collection.html') {
-                // Title | Series (series is no longer stored in `media`)
-                $title = $cells[0] ?? '';
-            }
+            // HTML imports currently use the same first-two-column mapping.
+            $title = $cells[0] ?? '';
+            $creator = $cells[1] ?? '';
 
             if ($title === '') {
                 continue;
             }
 
+            $format = in_array($fileName, ['books-collection.html', 'arkas-collection.html'], true) ? 'Paperback' : '';
+
             $rowsToInsert[] = [
                 'media_category_id' => $mediaTypeId,
                 'title' => $title,
                 'creator' => $creator,
-                'format' => '',
+                'format' => $format,
                 'updated' => date('Y-m-d H:i:s'),
             ];
         }

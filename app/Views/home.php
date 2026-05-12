@@ -2,7 +2,7 @@
 <?= $this->section('main') ?>
 
 <!-- Search -->
-<section class="max-w-4xl mx-auto p-4 mt-4 lg:mt-12 relative">
+<section class="max-w-3xl mx-auto p-4 mt-4 lg:mt-12 relative">
     <div class="relative">
         <input
             type="text"
