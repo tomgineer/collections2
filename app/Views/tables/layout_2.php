@@ -18,7 +18,7 @@
             <td><?= esc($item['title']) ?></td>
             <?php if ($alias !== 'arkas'): ?>
                 <td class="text-center">
-                    <span class="badge badge-xs badge-secondary font-bold"><?= esc($item['format'] !== '' ? $item['format'] : '-') ?></span>
+                    <span class="badge badge-xs badge-secondary font-bold whitespace-nowrap"><?= esc($item['format'] !== '' ? $item['format'] : '-') ?></span>
                 </td>
             <?php endif; ?>
         </tr>
